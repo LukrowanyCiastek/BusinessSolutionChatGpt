@@ -1,5 +1,6 @@
 ﻿using BusinessSolutionChatGpt.Interfaces;
 using BusinessSolutionChatGpt.Model;
+using System.Collections.Generic;
 
 namespace BusinessSolutionChatGpt
 {
@@ -14,15 +15,11 @@ namespace BusinessSolutionChatGpt
 
         void IProductRepository.Add(Product product) => products.Add(product);
 
-        void IProductRepository.Delete(int id)
-        {
-            var product = products[id - 1];
-            products.RemoveAt(id);
-        }
+        void IProductRepository.Delete(int id) => products.RemoveAt(id - 1);
 
         void IProductRepository.DeleteAll() => products.Clear();
 
-        bool IProductRepository.Exists(int id) => products.SingleOrDefault() != null;
+        bool IProductRepository.Exists(int id) => id - 1 < products.Count;
 
         List<Product> IProductRepository.GetAll() => products.ToList();
 
