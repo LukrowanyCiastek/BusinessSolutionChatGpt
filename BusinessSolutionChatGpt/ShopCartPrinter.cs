@@ -23,9 +23,9 @@ namespace BusinessSolutionChatGpt
                 output.WriteLine("koszyk jest pusty");
             }
 
-            foreach(var entry in shopCartManager.GetAll().Select((product, index) => new { product, index}))
+            foreach(var entry in products.Select((product, index) => new { product, index}))
             {
-                output.WriteLine($"Produkt {entry.index}");
+                output.WriteLine($"Produkt {entry.index + 1}");
                 output.WriteLine($"Nazwa {entry.product.Name}");
                 output.WriteLine($"Cena {entry.product.Price}");
             }

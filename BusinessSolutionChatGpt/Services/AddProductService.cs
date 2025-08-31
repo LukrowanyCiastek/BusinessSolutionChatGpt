@@ -1,4 +1,5 @@
 ﻿using BusinessSolutionChatGpt.DTO.Product;
+using BusinessSolutionChatGpt.Interfaces;
 using BusinessSolutionChatGpt.Model;
 using BusinessSolutionChatGpt.Services.Interfaces;
 
@@ -6,11 +7,11 @@ namespace BusinessSolutionChatGpt.Services
 {
     internal class AddProductService : IAddProductService
     {
-        private readonly IList<Product> products;
+        private readonly IProductRepository repository;
 
-        public AddProductService(IList<Product> products)
+        public AddProductService(IProductRepository repository)
         {
-            this.products = products;
+            this.repository = repository;
         }
 
         void IAddProductService.Add(AddProductDTO product)
@@ -21,7 +22,7 @@ namespace BusinessSolutionChatGpt.Services
                 Price = product.Price,
             };
 
-            this.products.Add(model);
+            this.repository.Add(model);
         }
     }
 }

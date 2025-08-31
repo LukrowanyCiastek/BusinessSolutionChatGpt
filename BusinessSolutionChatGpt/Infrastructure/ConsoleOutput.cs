@@ -13,7 +13,6 @@ namespace BusinessSolutionChatGpt.Infrastructure
         {
             Console.WriteLine(string.Empty);
             WriteLine(message);
-            Console.WriteLine(string.Empty);
         }
     }
 }

@@ -13,20 +13,22 @@ namespace BusinessSolutionChatGpt
         private readonly IOutput output;
         private readonly IInput input;
         private readonly IShopCartManager shopCartManager;
+        private readonly IParser<string> stringParser;
+        private readonly IParser<decimal> decimalParser;
         private readonly ShopCartPrinter shopCartPrinter;
 
-        public ShopApp(IOutput output, IInput input,  IShopCartManager shopCartManager) 
+        public ShopApp(IOutput output, IInput input,  IShopCartManager shopCartManager, IParser<string> stringParser, IParser<decimal> decimalParser) 
         {
             this.output = output;
             this.input = input;
             this.shopCartManager = shopCartManager;
+            this.stringParser = stringParser;
+            this.decimalParser = decimalParser;
             shopCartPrinter = new ShopCartPrinter(output, this.shopCartManager);
         }
 
         public void Start()
         {
-            IParser<string> stringParser = new StringParser();
-
             ConsoleKeyInfo readedKey;
 
             IValidator<string> stringValidator = new NotNullOrEmptyStringValidator();
@@ -45,7 +47,6 @@ namespace BusinessSolutionChatGpt
                         IInputRetriever<string> productNameRetriever = new LoopDataRetriever<string>(output, input, stringValidator, stringValidator, stringParser, "Podaj nazwę produktu", "Nazwa niepoprawna spróbuj ponownie");
                         string productName = productNameRetriever.TryGet();
 
-                        IParser<decimal> decimalParser = new DecimalParser();
                         IValidator<string> decimalValidator = new PositiveDecimalValidator(decimalParser);
                         IInputRetriever<decimal> priceProductRetriever = new LoopDataRetriever<decimal>(output, input, stringValidator, decimalValidator, decimalParser, "Podaj cenę produktu", "Cena niepoprawna spróbuj ponownie");
                         decimal productPrice = priceProductRetriever.TryGet();
@@ -57,7 +58,6 @@ namespace BusinessSolutionChatGpt
                         shopCartPrinter.Print();
                         break;
                     case ConsoleKey.D3:
-                        output.WriteLineWithEscape("Oto wszystkie produkty");
                         output.WriteLine($"Całkowity koszt to: {shopCartManager.GetTotalCost()}");
                         break;
                     default:

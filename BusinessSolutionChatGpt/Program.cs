@@ -32,6 +32,7 @@ namespace BusinessSolutionChatGpt
             serviceCollection.AddSingleton<IOutput, ConsoleOutput>();
             serviceCollection.AddSingleton<IInput, ConsoleInput>();
             serviceCollection.AddTransient<IParser<string>, StringParser>();
+            serviceCollection.AddTransient<IParser<decimal>, DecimalParser>();
             serviceCollection.AddSingleton<IList<Product>>(new List<Product>());
             serviceCollection.AddSingleton<IAddProductService, AddProductService>();
             serviceCollection.AddSingleton<IGetProductService, GetProductService>();
