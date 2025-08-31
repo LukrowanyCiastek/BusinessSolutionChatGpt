@@ -1,4 +1,4 @@
-﻿namespace BusinessSolutionChatGpt.Infrastructure.Interfacrs
+﻿namespace BusinessSolutionChatGpt.Infrastructure.Interfaces
 {
     internal interface IOutput
     {

@@ -1,11 +1,13 @@
 ﻿using BusinessSolutionChatGpt.Model;
 
-namespace BusinessSolutionChatGpt
+namespace BusinessSolutionChatGpt.Interfaces
 {
-    internal interface IShopCartManager
+    internal interface IProductRepository
     {
         void Add(Product product);
 
         List<Product> GetAll();
+
+        decimal GetAllPrice();
     }
 }

@@ -1,6 +1,5 @@
-﻿using BusinessSolutionChatGpt.Infrastructure.Interfacrs;
-using BusinessSolutionChatGpt.Model;
-using Newtonsoft.Json;
+﻿using BusinessSolutionChatGpt.Infrastructure.Interfaces;
+using BusinessSolutionChatGpt.Interfaces;
 
 namespace BusinessSolutionChatGpt
 {
@@ -17,15 +16,18 @@ namespace BusinessSolutionChatGpt
 
         internal void Print()
         {
+            output.WriteLine(string.Empty);
             var products = shopCartManager.GetAll();
             if (products.Count == 0)
             {
                 output.WriteLine("koszyk jest pusty");
             }
 
-            foreach(Product product in shopCartManager.GetAll())
+            foreach(var entry in products.Select((product, index) => new { product, index}))
             {
-                output.WriteLine(JsonConvert.SerializeObject(product));
+                output.WriteLine($"Produkt {entry.index + 1}");
+                output.WriteLine($"Nazwa {entry.product.Name}");
+                output.WriteLine($"Cena {entry.product.Price}");
             }
         }
     }

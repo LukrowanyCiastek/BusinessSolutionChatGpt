@@ -1,5 +1,7 @@
 ﻿using BusinessSolutionChatGpt.Infrastructure;
-using BusinessSolutionChatGpt.Infrastructure.Interfacrs;
+using BusinessSolutionChatGpt.Infrastructure.Interfaces;
+using BusinessSolutionChatGpt.Interfaces;
+using BusinessSolutionChatGpt.Model;
 using BusinessSolutionChatGpt.Parsers;
 using BusinessSolutionChatGpt.Parsers.Interfaces;
 using BusinessSolutionChatGpt.Services;
@@ -30,10 +32,12 @@ namespace BusinessSolutionChatGpt
             serviceCollection.AddSingleton<IOutput, ConsoleOutput>();
             serviceCollection.AddSingleton<IInput, ConsoleInput>();
             serviceCollection.AddTransient<IParser<string>, StringParser>();
-
-            serviceCollection.AddScoped<IAddProductService, AddProductSercvice>();
-            serviceCollection.AddScoped<IShopCartManager, ShopCartManager>();
-            serviceCollection.AddScoped<IShopApp, ShopApp>();            
+            serviceCollection.AddTransient<IParser<decimal>, DecimalParser>();
+            serviceCollection.AddSingleton<IList<Product>>(new List<Product>());
+            serviceCollection.AddSingleton<IAddProductService, AddProductService>();
+            serviceCollection.AddSingleton<IGetProductService, GetProductService>();
+            serviceCollection.AddSingleton<IShopCartManager, ShopCartManager>();
+            serviceCollection.AddSingleton<IShopApp, ShopApp>();            
         }
     }
 }

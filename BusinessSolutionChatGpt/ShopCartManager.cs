@@ -1,24 +1,25 @@
-﻿using BusinessSolutionChatGpt.Model;
+﻿using BusinessSolutionChatGpt.DTO.Product;
+using BusinessSolutionChatGpt.Interfaces;
+using BusinessSolutionChatGpt.Model;
+using BusinessSolutionChatGpt.Services.Interfaces;
 
 namespace BusinessSolutionChatGpt
 {
     internal class ShopCartManager : IShopCartManager
     {
-        private readonly List<Product> products;
+        private IAddProductService addProductService;
+        private readonly IGetProductService getProductService;
 
-        public ShopCartManager()
+        public ShopCartManager(IAddProductService addProductService, IGetProductService getProductService)
         {
-            products = new List<Product>();
+            this.addProductService = addProductService;
+            this.getProductService = getProductService;
         }
 
-        void IShopCartManager.Add(Product product)
-        {
-            products.Add(product);
-        }
+        void IShopCartManager.Add(AddProductDTO product) => addProductService.Add(product);
 
-        List<Product> IShopCartManager.GetAll()
-        {
-            return products;
-        }
+        List<ProductDetailsDTO> IShopCartManager.GetAll() => getProductService.GetAll();
+
+        public decimal GetTotalCost() => getProductService.GetPriceAll();
     }
 }

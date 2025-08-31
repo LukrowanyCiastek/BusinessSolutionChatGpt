@@ -1,4 +1,4 @@
-﻿using BusinessSolutionChatGpt.Infrastructure.Interfacrs;
+﻿using BusinessSolutionChatGpt.Infrastructure.Interfaces;
 
 namespace BusinessSolutionChatGpt.Infrastructure
 {
@@ -13,7 +13,6 @@ namespace BusinessSolutionChatGpt.Infrastructure
         {
             Console.WriteLine(string.Empty);
             WriteLine(message);
-            Console.WriteLine(string.Empty);
         }
     }
 }
