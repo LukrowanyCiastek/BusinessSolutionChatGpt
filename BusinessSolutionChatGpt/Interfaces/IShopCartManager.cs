@@ -9,5 +9,11 @@ namespace BusinessSolutionChatGpt.Interfaces
         List<ProductDetailsDTO> GetAll();
 
         decimal GetTotalCost();
+
+        void DeleteAll();
+
+        void Delete(int productId);
+
+        bool Exists(int productId);
     }
 }
