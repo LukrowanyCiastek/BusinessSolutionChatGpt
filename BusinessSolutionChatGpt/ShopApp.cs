@@ -80,7 +80,7 @@ namespace BusinessSolutionChatGpt
                         IInputRetriever<int> indexRetriever = new LoopDataRetriever<int>(output, input, stringValidator, productValidator, intParser, "Podaj identyfikator produktu", "Produkt nie istnieje");
                         var productId = indexRetriever.TryGet();
                         log.Debug($"Użytkownik próbuje produkt {productId}");
-                        shopCartManager.Delete(productId - 1);
+                        shopCartManager.Delete(productId);
                         output.WriteLine($"Usunięto produkt o identyfikatorze: {productId}");
                         break;
                     case ConsoleKey.D5:

@@ -12,7 +12,7 @@ namespace BusinessSolutionChatGpt.Validators
 
         public ProductIdValidator(IParser<int> integerParser, IShopCartManager shopCartManager) 
         {
-            this.integerValidator = new IndexValidator(integerParser);
+            this.integerValidator = new PositiveIntegerValidator(integerParser);
             this.shopCartManager = shopCartManager;
             this.integerParser = integerParser;
         }
