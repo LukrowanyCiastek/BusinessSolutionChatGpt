@@ -1,10 +1,8 @@
-﻿using BusinessSolutionChatGpt.Commands;
-using BusinessSolutionChatGpt.Commands.Interfaces;
-using BusinessSolutionChatGpt.Infrastructure.Interfacrs;
-using BusinessSolutionChatGpt.Model;
+﻿using BusinessSolutionChatGpt.DTO.Product;
+using BusinessSolutionChatGpt.Infrastructure.Interfaces;
+using BusinessSolutionChatGpt.Interfaces;
 using BusinessSolutionChatGpt.Parsers;
 using BusinessSolutionChatGpt.Parsers.Interfaces;
-using BusinessSolutionChatGpt.Services.Interfaces;
 using BusinessSolutionChatGpt.Validators;
 using BusinessSolutionChatGpt.Validators.Interfaces;
 
@@ -14,17 +12,15 @@ namespace BusinessSolutionChatGpt
     {
         private readonly IOutput output;
         private readonly IInput input;
-        private readonly IAddProductService addProductService;
+        private readonly IShopCartManager shopCartManager;
         private readonly ShopCartPrinter shopCartPrinter;
-        private readonly ShopCartCalculator shopCartCalculator;
 
-        public ShopApp(IOutput output, IInput input, IAddProductService addProductService, IShopCartManager shopCartManager) 
+        public ShopApp(IOutput output, IInput input,  IShopCartManager shopCartManager) 
         {
             this.output = output;
             this.input = input;
-            this.addProductService = addProductService;
-            shopCartPrinter = new ShopCartPrinter(output, shopCartManager);
-            shopCartCalculator = new ShopCartCalculator(shopCartManager);
+            this.shopCartManager = shopCartManager;
+            shopCartPrinter = new ShopCartPrinter(output, this.shopCartManager);
         }
 
         public void Start()
@@ -43,8 +39,6 @@ namespace BusinessSolutionChatGpt
                 output.WriteLine("Naciśnij Esc aby zakończyć pracę");
 
                 readedKey = input.ReadKey();
-                ICommand command;
-                var shopCartManager = new ShopCartManager();
                 switch (readedKey.Key)
                 {
                     case ConsoleKey.D1:
@@ -56,18 +50,15 @@ namespace BusinessSolutionChatGpt
                         IInputRetriever<decimal> priceProductRetriever = new LoopDataRetriever<decimal>(output, input, stringValidator, decimalValidator, decimalParser, "Podaj cenę produktu", "Cena niepoprawna spróbuj ponownie");
                         decimal productPrice = priceProductRetriever.TryGet();
 
-                        command = new AddProductCommand(addProductService, new Product { Name = productName!, Price = productPrice });
-                        command.Execute();
+                        shopCartManager.Add(new AddProductDTO { Name = productName, Price = productPrice });
                         break;
                     case ConsoleKey.D2:
 
-                        command = new PrintAllProductCommand(output, shopCartPrinter);
-                        command.Execute();
+                        shopCartPrinter.Print();
                         break;
                     case ConsoleKey.D3:
                         output.WriteLineWithEscape("Oto wszystkie produkty");
-                        command = new PrintTotalCostCommand(output, shopCartCalculator);
-                        command.Execute();
+                        output.WriteLine($"Całkowity koszt to: {shopCartManager.GetTotalCost()}");
                         break;
                     default:
                         output.WriteLineWithEscape("niepoprawna komenda");

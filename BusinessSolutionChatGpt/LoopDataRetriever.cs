@@ -1,4 +1,5 @@
-﻿using BusinessSolutionChatGpt.Infrastructure.Interfacrs;
+﻿using BusinessSolutionChatGpt.Infrastructure.Interfaces;
+using BusinessSolutionChatGpt.Interfaces;
 using BusinessSolutionChatGpt.Parsers.Interfaces;
 using BusinessSolutionChatGpt.Validators.Interfaces;
 
@@ -48,7 +49,7 @@ namespace BusinessSolutionChatGpt
                     output.WriteLineWithEscape(repeatMessage!);
                 }
             }
-            while (isCorrect);
+            while (!isCorrect);
 
             return result;
         }

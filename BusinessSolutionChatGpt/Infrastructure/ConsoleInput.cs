@@ -1,4 +1,4 @@
-﻿using BusinessSolutionChatGpt.Infrastructure.Interfacrs;
+﻿using BusinessSolutionChatGpt.Infrastructure.Interfaces;
 
 namespace BusinessSolutionChatGpt.Infrastructure
 {

@@ -2,8 +2,10 @@
 
 namespace BusinessSolutionChatGpt.Services.Interfaces
 {
-    internal interface IAddProductService
+    internal interface IGetProductService
     {
-        void Add(AddProductDTO product);
+        List<ProductDetailsDTO> GetAll();
+
+        decimal GetPriceAll();
     }
 }

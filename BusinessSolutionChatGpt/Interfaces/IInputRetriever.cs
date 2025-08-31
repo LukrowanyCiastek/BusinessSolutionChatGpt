@@ -1,4 +1,4 @@
-﻿namespace BusinessSolutionChatGpt
+﻿namespace BusinessSolutionChatGpt.Interfaces
 {
     internal interface IInputRetriever<T>
     {
