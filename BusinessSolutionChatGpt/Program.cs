@@ -1,11 +1,12 @@
-﻿using BusinessSolutionChatGpt.Infrastructure;
+﻿using BusinessSolutionChatGpt.DTO.Input;
+using BusinessSolutionChatGpt.Infrastructure;
 using BusinessSolutionChatGpt.Infrastructure.Interfaces;
 using BusinessSolutionChatGpt.Interfaces;
 using BusinessSolutionChatGpt.Model;
-using BusinessSolutionChatGpt.Parsers;
-using BusinessSolutionChatGpt.Parsers.Interfaces;
 using BusinessSolutionChatGpt.Services;
 using BusinessSolutionChatGpt.Services.Interfaces;
+using BusinessSolutionChatGpt.Validators;
+using FluentValidation;
 using log4net;
 using log4net.Config;
 using log4net.Repository;
@@ -51,9 +52,6 @@ namespace BusinessSolutionChatGpt
             serviceCollection.AddSingleton(log);
             serviceCollection.AddSingleton<IOutput, ConsoleOutput>();
             serviceCollection.AddSingleton<IInput, ConsoleInput>();
-            serviceCollection.AddTransient<IParser<string>, StringParser>();
-            serviceCollection.AddTransient<IParser<decimal>, DecimalParser>();
-            serviceCollection.AddTransient<IParser<int>, IntegerParser>();
             serviceCollection.AddSingleton<IList<Product>>(new List<Product>());
             serviceCollection.AddSingleton<IProductRepository, ProductRepository>();
             serviceCollection.AddSingleton<IAddProductService, AddProductService>();

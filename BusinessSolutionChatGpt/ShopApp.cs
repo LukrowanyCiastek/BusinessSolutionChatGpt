@@ -1,11 +1,12 @@
-﻿using BusinessSolutionChatGpt.DTO.Product;
+﻿using BusinessSolutionChatGpt.DTO.Input;
+using BusinessSolutionChatGpt.DTO.Product;
 using BusinessSolutionChatGpt.Infrastructure.Interfaces;
 using BusinessSolutionChatGpt.Interfaces;
-using BusinessSolutionChatGpt.Parsers.Interfaces;
 using BusinessSolutionChatGpt.Validators;
-using BusinessSolutionChatGpt.Validators.Interfaces;
+using FluentValidation;
 using log4net;
 using Newtonsoft.Json;
+using System.Globalization;
 
 namespace BusinessSolutionChatGpt
 {
@@ -14,26 +15,17 @@ namespace BusinessSolutionChatGpt
         private readonly IOutput output;
         private readonly IInput input;
         private readonly IShopCartManager shopCartManager;
-        private readonly IParser<string> stringParser;
-        private readonly IParser<decimal> decimalParser;
-        private readonly IParser<int> intParser;
         private readonly ILog log;
         private readonly ShopCartPrinter shopCartPrinter;
 
         public ShopApp(IOutput output,
             IInput input,
             IShopCartManager shopCartManager,
-            IParser<string> stringParser,
-            IParser<decimal> decimalParser,
-            IParser<int> intParser,
             ILog log) 
         {
             this.output = output;
             this.input = input;
             this.shopCartManager = shopCartManager;
-            this.stringParser = stringParser;
-            this.decimalParser = decimalParser;
-            this.intParser = intParser;
             this.log = log;
             shopCartPrinter = new ShopCartPrinter(output, this.shopCartManager);
         }
@@ -41,8 +33,6 @@ namespace BusinessSolutionChatGpt
         public void Start()
         {
             ConsoleKeyInfo readedKey;
-
-            IValidator<string> stringValidator = new NotNullOrEmptyStringValidator();
             do
             {
                 output.WriteLine(string.Empty);
@@ -57,11 +47,10 @@ namespace BusinessSolutionChatGpt
                 switch (readedKey.Key)
                 {
                     case ConsoleKey.D1:
-                        IInputRetriever<string> productNameRetriever = new LoopDataRetriever<string>(output, input, stringValidator, stringValidator, stringParser, "Podaj nazwę produktu", "Nazwa niepoprawna spróbuj ponownie");
+                        IInputRetriever<string> productNameRetriever = new LoopDataRetriever<string>(output, input, new FluentNotNullOrEmptyStringValidator("Nazwa została nie podana", "Nazwa jest pusta"), "Podaj nazwę produktu");
                         string productName = productNameRetriever.TryGet()!;
 
-                        IValidator<string> decimalValidator = new PositiveDecimalValidator(decimalParser);
-                        IInputRetriever<decimal> priceProductRetriever = new LoopDataRetriever<decimal>(output, input, stringValidator, decimalValidator, decimalParser, "Podaj cenę produktu", "Cena niepoprawna spróbuj ponownie");
+                        IInputRetriever<decimal> priceProductRetriever = new LoopDataRetriever<decimal>(output, input, new FluentPositiveDecimalValidator("Cena nie została podana", "Cena jest psuta", "Ciąg znaków to nie cena", "Cena nie może być mniejsza od 0"), "Podaj cenę produktu");
                         decimal productPrice = priceProductRetriever.TryGet();
                         var product = new AddProductDTO { Name = productName, Price = productPrice };
                         log.Debug($"Użytkownik stworzył produkt {JsonConvert.SerializeObject(product)}");
@@ -73,11 +62,11 @@ namespace BusinessSolutionChatGpt
                         break;
                     case ConsoleKey.D3:
                         log.Debug($"Użytkownik wyświetił całkowity koszt");
-                        output.WriteLine($"Całkowity koszt to: {shopCartManager.GetTotalCost()}");
+                        output.WriteLineWithEscape($"Całkowity koszt to: {shopCartManager.GetTotalCost().ToString(CultureInfo.InvariantCulture)}");
                         break;
                     case ConsoleKey.D4:
-                        IValidator<string> productValidator = new ProductIdValidator(intParser, shopCartManager);
-                        IInputRetriever<int> indexRetriever = new LoopDataRetriever<int>(output, input, stringValidator, productValidator, intParser, "Podaj identyfikator produktu", "Produkt nie istnieje");
+                        AbstractValidator<InputDTO<int>> productValidator = new FluentProductIdValidator("Podany ciąg znaków jest null", "Podany ciąg znaków jest pusty", "Niepoprawny identyfikator", "Produkt nie istnieje", shopCartManager);
+                        IInputRetriever<int> indexRetriever = new LoopDataRetriever<int>(output, input, productValidator, "Podaj identyfikator produktu");
                         var productId = indexRetriever.TryGet();
                         log.Debug($"Użytkownik próbuje produkt {productId}");
                         shopCartManager.Delete(productId);
