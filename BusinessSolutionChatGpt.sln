@@ -5,7 +5,7 @@ VisualStudioVersion = 17.14.36414.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessSolutionChatGpt", "BusinessSolutionChatGpt\BusinessSolutionChatGpt.csproj", "{FCDD48B8-B2E9-2210-BE00-DBCD256874EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuisnessSolutionChatGpt.Tests", "BuisnessSolutionChatGpt.Tests\BuisnessSolutionChatGpt.Tests.csproj", "{5908277B-372C-4EBB-B406-ECE31C28FAE6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessSolutionChatGpt.Tests", "BusinessSolutionChatGpt.Tests\BusinessSolutionChatGpt.Tests.csproj", "{5908277B-372C-4EBB-B406-ECE31C28FAE6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

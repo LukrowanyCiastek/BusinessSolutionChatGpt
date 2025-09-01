@@ -1,4 +1,4 @@
-﻿namespace BuisnessSolutionChatGpt.Tests;
+﻿namespace BusinessSolutionChatGpt.Tests;
 
 public class Tests
 {
