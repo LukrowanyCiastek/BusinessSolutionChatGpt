@@ -7,5 +7,7 @@ namespace BusinessSolutionChatGpt.Services.Interfaces
         List<ProductDetailsDTO> GetAll();
 
         decimal GetPriceAll();
+
+        bool Exists(int id);
     }
 }

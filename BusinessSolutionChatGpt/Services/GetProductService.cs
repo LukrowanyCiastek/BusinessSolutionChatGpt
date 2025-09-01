@@ -13,8 +13,10 @@ namespace BusinessSolutionChatGpt.Services
             this.repository = repository;
         }
 
-        public List<ProductDetailsDTO> GetAll() => repository.GetAll().Select(x => new ProductDetailsDTO { Name = x.Name!, Price = x.Price }).ToList();
+        bool IGetProductService.Exists(int id) => repository.Exists(id);
 
-        public decimal GetPriceAll() => repository.GetAllPrice();
+        List<ProductDetailsDTO> IGetProductService.GetAll() => repository.GetAll().Select(x => new ProductDetailsDTO { Name = x.Name!, Price = x.Price }).ToList();
+
+        decimal IGetProductService.GetPriceAll() => repository.GetAllPrice();
     }
 }

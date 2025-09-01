@@ -12,10 +12,16 @@ namespace BusinessSolutionChatGpt
             this.products = products;
         }
 
-        public void Add(Product product) => products.Add(product);
+        void IProductRepository.Add(Product product) => products.Add(product);
 
-        public List<Product> GetAll() => products.ToList();
+        void IProductRepository.Delete(int id) => products.RemoveAt(id - 1);
 
-        public decimal GetAllPrice() => products.Sum(x => x.Price);
+        void IProductRepository.DeleteAll() => products.Clear();
+
+        bool IProductRepository.Exists(int id) => id >= 0 && id < products.Count;
+
+        List<Product> IProductRepository.GetAll() => products.ToList();
+
+        decimal IProductRepository.GetAllPrice() => products.Sum(x => x.Price);
     }
 }

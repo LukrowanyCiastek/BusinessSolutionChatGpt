@@ -3,11 +3,11 @@ using System.Globalization;
 
 namespace BusinessSolutionChatGpt.Validators
 {
-    internal class DecimalValidator : IValidator<string>
+    internal class IntegerValidator : IValidator<string>
     {
         private readonly IValidator<string> validator;
 
-        public DecimalValidator()
+        public IntegerValidator()
         {
             validator = new NotNullOrEmptyStringValidator();
         }
@@ -15,7 +15,7 @@ namespace BusinessSolutionChatGpt.Validators
         {
             if (validator.IsValid(input))
             {
-                return decimal.TryParse(input, CultureInfo.InvariantCulture, out decimal result);
+                return int.TryParse(input, CultureInfo.InvariantCulture, out int result);
             }
 
             return false;

@@ -1,5 +1,6 @@
 ﻿using BusinessSolutionChatGpt.Infrastructure.Interfaces;
 using BusinessSolutionChatGpt.Interfaces;
+using System.Globalization;
 
 namespace BusinessSolutionChatGpt
 {
@@ -27,7 +28,7 @@ namespace BusinessSolutionChatGpt
             {
                 output.WriteLine($"Produkt {entry.index + 1}");
                 output.WriteLine($"Nazwa {entry.product.Name}");
-                output.WriteLine($"Cena {entry.product.Price}");
+                output.WriteLine($"Cena {entry.product.Price.ToString(CultureInfo.InvariantCulture)}");
             }
         }
     }

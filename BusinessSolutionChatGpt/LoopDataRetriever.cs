@@ -32,21 +32,27 @@ namespace BusinessSolutionChatGpt
             this.parser = parser;
         }
 
-        T IInputRetriever<T>.TryGet()
+        T? IInputRetriever<T>.TryGet()
         {
             bool isCorrect;
-            T result;
+            T? result = default;
             do
             {
                 output.WriteLineWithEscape(instruction);
 
                 string? rawData = input.ReadLine();
                 isCorrect = dataValidator.IsValid(rawData);
-                result = parser.Parse(rawData!);
 
-                if (!isCorrect && messageValidator.IsValid(repeatMessage!))
+                if (!isCorrect )
                 {
-                    output.WriteLineWithEscape(repeatMessage!);
+                    if (messageValidator.IsValid(repeatMessage!))
+                    {
+                        output.WriteLineWithEscape(repeatMessage!);
+                    }
+                }
+                else
+                {
+                    result = parser.Parse(rawData!);
                 }
             }
             while (!isCorrect);
