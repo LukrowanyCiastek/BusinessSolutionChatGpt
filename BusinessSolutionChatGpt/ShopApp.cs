@@ -58,7 +58,7 @@ namespace BusinessSolutionChatGpt
                 {
                     case ConsoleKey.D1:
                         IInputRetriever<string> productNameRetriever = new LoopDataRetriever<string>(output, input, stringValidator, stringValidator, stringParser, "Podaj nazwę produktu", "Nazwa niepoprawna spróbuj ponownie");
-                        string productName = productNameRetriever.TryGet();
+                        string productName = productNameRetriever.TryGet()!;
 
                         IValidator<string> decimalValidator = new PositiveDecimalValidator(decimalParser);
                         IInputRetriever<decimal> priceProductRetriever = new LoopDataRetriever<decimal>(output, input, stringValidator, decimalValidator, decimalParser, "Podaj cenę produktu", "Cena niepoprawna spróbuj ponownie");

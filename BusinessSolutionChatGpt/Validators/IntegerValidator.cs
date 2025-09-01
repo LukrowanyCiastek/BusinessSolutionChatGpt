@@ -5,6 +5,20 @@ namespace BusinessSolutionChatGpt.Validators
 {
     internal class IntegerValidator : IValidator<string>
     {
-        bool IValidator<string>.IsValid(string? input) => int.TryParse(input, CultureInfo.InvariantCulture, out int result);
+        private readonly IValidator<string> validator;
+
+        public IntegerValidator()
+        {
+            validator = new NotNullOrEmptyStringValidator();
+        }
+        bool IValidator<string>.IsValid(string? input)
+        {
+            if (validator.IsValid(input))
+            {
+                return int.TryParse(input, CultureInfo.InvariantCulture, out int result);
+            }
+
+            return false;
+        }
     }
 }

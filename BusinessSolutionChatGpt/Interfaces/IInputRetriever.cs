@@ -2,6 +2,6 @@
 {
     internal interface IInputRetriever<T>
     {
-        T TryGet();
+        T? TryGet();
     }
 }
