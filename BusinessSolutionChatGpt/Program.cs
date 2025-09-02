@@ -2,7 +2,6 @@
 using BusinessSolutionChatGpt.Infrastructure.Interfaces;
 using BusinessSolutionChatGpt.Interfaces;
 using BusinessSolutionChatGpt.Model;
-using BusinessSolutionChatGpt.Resources;
 using BusinessSolutionChatGpt.Services;
 using BusinessSolutionChatGpt.Services.Interfaces;
 using BusinessSolutionChatGpt.Validators;
