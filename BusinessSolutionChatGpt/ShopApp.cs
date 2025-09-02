@@ -5,6 +5,7 @@ using BusinessSolutionChatGpt.Interfaces;
 using BusinessSolutionChatGpt.Validators;
 using FluentValidation;
 using log4net;
+using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
 using System.Globalization;
 
@@ -18,15 +19,17 @@ namespace BusinessSolutionChatGpt
         private readonly IInputRetriever<string> productNameRetriever;
         private readonly IInputRetriever<decimal> productPriceRetriever;
         private readonly IInputRetriever<int> productIdentifierRetriever;
+        private readonly IStringLocalizer<Resources.Resources> localizer;
         private readonly ILog log;
         private readonly ShopCartPrinter shopCartPrinter;
 
         public ShopApp(IOutput output,
             IInput input,
             IShopCartManager shopCartManager,
-            IInputRetriever<string> productNameRetriever,
-            IInputRetriever<decimal> productPriceRetriever,
-            IInputRetriever<int> productIdentifierRetriever,
+            ProductNameLoopDataRetriever productNameRetriever,
+            ProductPriceLoopDataRetriever productPriceRetriever,
+            ProductIdLoopDataRetriever productIdentifierRetriever,
+            IStringLocalizer<Resources.Resources> localizer,
             ILog log) 
         {
             this.output = output;
@@ -35,6 +38,7 @@ namespace BusinessSolutionChatGpt
             this.productNameRetriever = productNameRetriever;
             this.productPriceRetriever = productPriceRetriever;
             this.productIdentifierRetriever = productIdentifierRetriever;
+            this.localizer = localizer;
             this.log = log;
             shopCartPrinter = new ShopCartPrinter(output, this.shopCartManager);
         }
@@ -45,12 +49,12 @@ namespace BusinessSolutionChatGpt
             do
             {
                 output.WriteLine(string.Empty);
-                output.WriteLine(Resources.Resources.AddProductInstruction);
-                output.WriteLine(Resources.Resources.ShowAllProductsInstruction);
-                output.WriteLine(Resources.Resources.ShowTotalCostInstruction);
-                output.WriteLine(Resources.Resources.RemoveSpecifiedProductInstruction);
-                output.WriteLine(Resources.Resources.RemoveAllProductsInstruction);
-                output.WriteLine(Resources.Resources.StopShopAppInstruction);
+                output.WriteLine(localizer["AddProductInstruction"].Value);
+                output.WriteLine(localizer["ShowAllProductsInstruction"].Value);
+                output.WriteLine(localizer["ShowTotalCostInstruction"].Value);
+                output.WriteLine(localizer["RemoveSpecifiedProductInstruction"].Value);
+                output.WriteLine(localizer["RemoveAllProductsInstruction"].Value);
+                output.WriteLine(localizer["StopShopAppInstruction"].Value);
 
                 readedKey = input.ReadKey();
                 switch (readedKey.Key)

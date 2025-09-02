@@ -1,16 +1,15 @@
-﻿using BusinessSolutionChatGpt.DTO.Input;
-using BusinessSolutionChatGpt.Infrastructure;
+﻿using BusinessSolutionChatGpt.Infrastructure;
 using BusinessSolutionChatGpt.Infrastructure.Interfaces;
 using BusinessSolutionChatGpt.Interfaces;
 using BusinessSolutionChatGpt.Model;
 using BusinessSolutionChatGpt.Services;
 using BusinessSolutionChatGpt.Services.Interfaces;
 using BusinessSolutionChatGpt.Validators;
-using FluentValidation;
 using log4net;
 using log4net.Config;
 using log4net.Repository;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System.Reflection;
 
 namespace BusinessSolutionChatGpt
@@ -50,6 +49,12 @@ namespace BusinessSolutionChatGpt
         private static void ConfigureServices(ServiceCollection serviceCollection)
         {
             serviceCollection.AddSingleton(log);
+            serviceCollection.AddLogging(builder =>
+            {
+                builder.AddConsole();
+                builder.SetMinimumLevel(LogLevel.Warning);
+            });
+            serviceCollection.AddLocalization(options => options.ResourcesPath = "Resources");
             serviceCollection.AddSingleton<IOutput, ConsoleOutput>();
             serviceCollection.AddSingleton<IInput, ConsoleInput>();
             serviceCollection.AddSingleton<IList<Product>>(new List<Product>());
@@ -58,24 +63,12 @@ namespace BusinessSolutionChatGpt
             serviceCollection.AddSingleton<IGetProductService, GetProductService>();
             serviceCollection.AddSingleton<IDeleteProductService, DeleteProductService>();
             serviceCollection.AddSingleton<IShopCartManager, ShopCartManager>();
-            serviceCollection.AddSingleton(new NotNullOrEmptyStringValidator(Resources.Resources.ProductMissingNameValidationMessage, Resources.Resources.ProductEmptyNameValidationMessage));
-            serviceCollection.AddSingleton(
-                new PositiveDecimalValidator(
-                    Resources.Resources.ProductMissingPriceValidationMessage,
-                    Resources.Resources.ProductEmptyPriceValidationMessage,
-                    Resources.Resources.ProductNotDecimalPriceValidationMessage,
-                    Resources.Resources.ProductNotPositivePriceValidationMessage
-                ));
-            serviceCollection.AddSingleton(x =>
-                new ProductIdValidator(
-                    Resources.Resources.ProductMissingIdentifierValidationMessage,
-                    Resources.Resources.ProductEmptyIdentifierValidationMessage,
-                    Resources.Resources.ProductNotIntegerIdentifierValidationMessage,
-                    Resources.Resources.ProductNotExistValidationMessage,
-                    x.GetService<IShopCartManager>()!));
-            serviceCollection.AddSingleton<IInputRetriever<string>>(x => new LoopDataRetriever<string>(x.GetService<IOutput>()!, x.GetService<IInput>()!, x.GetService<NotNullOrEmptyStringValidator>()!, Resources.Resources.ProductNameInstruction));
-            serviceCollection.AddSingleton<IInputRetriever<decimal>>(x => new LoopDataRetriever<decimal>(x.GetService<IOutput>()!, x.GetService<IInput>()!, x.GetService<PositiveDecimalValidator>()!, Resources.Resources.ProductPriceInstruction));
-            serviceCollection.AddSingleton<IInputRetriever<int>>(x => new LoopDataRetriever<int>(x.GetService<IOutput>()!, x.GetService<IInput>()!, x.GetService<ProductIdValidator>()!, Resources.Resources.ProductIdentifierInstruction));
+            serviceCollection.AddSingleton<ProductNameValidator>();
+            serviceCollection.AddSingleton< ProductIdValidator>();
+            serviceCollection.AddSingleton<ProductNameLoopDataRetriever>();
+            serviceCollection.AddSingleton<ProductPricelValidator>();
+            serviceCollection.AddSingleton<ProductPriceLoopDataRetriever>();
+            serviceCollection.AddSingleton<ProductIdLoopDataRetriever>();
             serviceCollection.AddSingleton<IShopApp, ShopApp>();
         }
     }

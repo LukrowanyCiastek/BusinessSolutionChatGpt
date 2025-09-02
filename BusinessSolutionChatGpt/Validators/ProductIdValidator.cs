@@ -1,17 +1,18 @@
 ﻿using BusinessSolutionChatGpt.DTO.Input;
 using BusinessSolutionChatGpt.Interfaces;
 using FluentValidation;
+using Microsoft.Extensions.Localization;
 using System.Globalization;
 
 namespace BusinessSolutionChatGpt.Validators
 {
     internal class ProductIdValidator : AbstractValidator<InputDTO<int>>
     {
-        public ProductIdValidator(string nullMessage, string emptyMessage, string wrongIdentifier, string entyDoesNotExistMessage, IShopCartManager shopCartManager)
+        public ProductIdValidator(IStringLocalizer<Resources.Resources> localizer, IShopCartManager shopCartManager)
         {
             RuleFor(x => x.Raw)
-                .NotNull().WithMessage(nullMessage)
-                .NotEmpty().WithMessage(emptyMessage)
+                .NotNull().WithMessage(localizer["ProductMissingIdentifierValidationMessage"])
+                .NotEmpty().WithMessage(localizer["ProductEmptyIdentifierValidationMessage"])
                 .Must((dto, value) =>
                 {
                     if (int.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out var result))
@@ -21,9 +22,9 @@ namespace BusinessSolutionChatGpt.Validators
                     }
                     return false;
                 })
-                .WithMessage(wrongIdentifier)
+                .WithMessage(localizer["ProductNotIntegerIdentifierValidationMessage"])
                 .Must((dto, value) => shopCartManager.Exists(dto.Value - 1))
-                .WithMessage(entyDoesNotExistMessage);
+                .WithMessage(localizer["ProductNotExistValidationMessage"]);
         }
     }
 }
