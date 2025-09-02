@@ -9,7 +9,7 @@ namespace BusinessSolutionChatGpt
         public ProductIdLoopDataRetriever(IOutput output,
             IInput input,
             ProductIdValidator dataValidator,
-            IStringLocalizer<BusinessSolutionChatGpt.Resources.SharedResource> localizer)
+            IStringLocalizer localizer)
             : base(output, input, dataValidator, localizer["ProductIdentifierInstruction"])
         {
         }
