@@ -4,7 +4,7 @@ namespace BusinessSolutionChatGpt.Validators
 {
     internal class ProductPriceValidator : PositiveDecimalValidator
     {
-        public ProductPriceValidator(IStringLocalizer<Resources.SharedResource> localizer)
+        public ProductPriceValidator(IStringLocalizer<BusinessSolutionChatGpt.Resources.SharedResource> localizer)
             : base(
                   localizer["ProductMissingPriceValidationMessage"],
                   localizer["ProductEmptyPriceValidationMessage"],

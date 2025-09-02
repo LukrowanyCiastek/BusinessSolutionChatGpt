@@ -8,7 +8,7 @@ namespace BusinessSolutionChatGpt.Validators
 {
     internal class ProductIdValidator : AbstractValidator<InputDTO<int>>
     {
-        public ProductIdValidator(IStringLocalizer<Resources.SharedResource> localizer, IShopCartManager shopCartManager)
+        public ProductIdValidator(IStringLocalizer<BusinessSolutionChatGpt.Resources.SharedResource> localizer, IShopCartManager shopCartManager)
         {
             RuleFor(x => x.Raw)
                 .NotNull().WithMessage(localizer["ProductMissingIdentifierValidationMessage"])

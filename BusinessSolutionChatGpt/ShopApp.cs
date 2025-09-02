@@ -19,7 +19,7 @@ namespace BusinessSolutionChatGpt
         private readonly IInputRetriever<string> productNameRetriever;
         private readonly IInputRetriever<decimal> productPriceRetriever;
         private readonly IInputRetriever<int> productIdentifierRetriever;
-        private readonly IStringLocalizer<Resources.SharedResource> localizer;
+        private readonly IStringLocalizer<BusinessSolutionChatGpt.Resources.SharedResource> localizer;
         private readonly ILog log;
         private readonly ShopCartPrinter shopCartPrinter;
 
@@ -29,7 +29,7 @@ namespace BusinessSolutionChatGpt
             ProductNameLoopDataRetriever productNameRetriever,
             ProductPriceLoopDataRetriever productPriceRetriever,
             ProductIdLoopDataRetriever productIdentifierRetriever,
-            IStringLocalizer<Resources.SharedResource> localizer,
+            IStringLocalizer<BusinessSolutionChatGpt.Resources.SharedResource> localizer,
             ILog log) 
         {
             this.output = output;
