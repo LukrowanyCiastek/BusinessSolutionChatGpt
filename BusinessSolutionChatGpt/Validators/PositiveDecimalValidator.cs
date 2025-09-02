@@ -4,9 +4,9 @@ using System.Globalization;
 
 namespace BusinessSolutionChatGpt.Validators
 {
-    internal class FluentPositiveDecimalValidator : AbstractValidator<InputDTO<decimal>>
+    internal class PositiveDecimalValidator : AbstractValidator<InputDTO<decimal>>
     {
-        public FluentPositiveDecimalValidator(string nullMessage, string emptyMessage, string parseMessage, string notPositiveMessage)
+        public PositiveDecimalValidator(string nullMessage, string emptyMessage, string parseMessage, string notPositiveMessage)
         {
             RuleFor(x => x.Raw)
                 .NotNull().WithMessage(nullMessage)

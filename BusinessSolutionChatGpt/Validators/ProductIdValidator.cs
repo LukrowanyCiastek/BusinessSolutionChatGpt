@@ -5,9 +5,9 @@ using System.Globalization;
 
 namespace BusinessSolutionChatGpt.Validators
 {
-    internal class FluentProductIdValidator : AbstractValidator<InputDTO<int>>
+    internal class ProductIdValidator : AbstractValidator<InputDTO<int>>
     {
-        public FluentProductIdValidator(string nullMessage, string emptyMessage, string wrongIdentifier, string entyDoesNotExistMessage, IShopCartManager shopCartManager)
+        public ProductIdValidator(string nullMessage, string emptyMessage, string wrongIdentifier, string entyDoesNotExistMessage, IShopCartManager shopCartManager)
         {
             RuleFor(x => x.Raw)
                 .NotNull().WithMessage(nullMessage)

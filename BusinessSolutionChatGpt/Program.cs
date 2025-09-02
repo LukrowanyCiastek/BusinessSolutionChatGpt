@@ -58,7 +58,25 @@ namespace BusinessSolutionChatGpt
             serviceCollection.AddSingleton<IGetProductService, GetProductService>();
             serviceCollection.AddSingleton<IDeleteProductService, DeleteProductService>();
             serviceCollection.AddSingleton<IShopCartManager, ShopCartManager>();
-            serviceCollection.AddSingleton<IShopApp, ShopApp>();            
+            serviceCollection.AddSingleton(new NotNullOrEmptyStringValidator(Resources.Resources.ProductMissingNameValidationMessage, Resources.Resources.ProductEmptyNameValidationMessage));
+            serviceCollection.AddSingleton(
+                new PositiveDecimalValidator(
+                    Resources.Resources.ProductMissingPriceValidationMessage,
+                    Resources.Resources.ProductEmptyPriceValidationMessage,
+                    Resources.Resources.ProductNotDecimalPriceValidationMessage,
+                    Resources.Resources.ProductNotPositivePriceValidationMessage
+                ));
+            serviceCollection.AddSingleton(x =>
+                new ProductIdValidator(
+                    Resources.Resources.ProductMissingIdentifierValidationMessage,
+                    Resources.Resources.ProductEmptyIdentifierValidationMessage,
+                    Resources.Resources.ProductNotIntegerIdentifierValidationMessage,
+                    Resources.Resources.ProductNotExistValidationMessage,
+                    x.GetService<IShopCartManager>()!));
+            serviceCollection.AddSingleton<IInputRetriever<string>>(x => new LoopDataRetriever<string>(x.GetService<IOutput>()!, x.GetService<IInput>()!, x.GetService<NotNullOrEmptyStringValidator>()!, Resources.Resources.ProductNameInstruction));
+            serviceCollection.AddSingleton<IInputRetriever<decimal>>(x => new LoopDataRetriever<decimal>(x.GetService<IOutput>()!, x.GetService<IInput>()!, x.GetService<PositiveDecimalValidator>()!, Resources.Resources.ProductPriceInstruction));
+            serviceCollection.AddSingleton<IInputRetriever<int>>(x => new LoopDataRetriever<int>(x.GetService<IOutput>()!, x.GetService<IInput>()!, x.GetService<ProductIdValidator>()!, Resources.Resources.ProductIdentifierInstruction));
+            serviceCollection.AddSingleton<IShopApp, ShopApp>();
         }
     }
 }

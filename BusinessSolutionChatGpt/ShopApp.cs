@@ -15,17 +15,26 @@ namespace BusinessSolutionChatGpt
         private readonly IOutput output;
         private readonly IInput input;
         private readonly IShopCartManager shopCartManager;
+        private readonly IInputRetriever<string> productNameRetriever;
+        private readonly IInputRetriever<decimal> productPriceRetriever;
+        private readonly IInputRetriever<int> productIdentifierRetriever;
         private readonly ILog log;
         private readonly ShopCartPrinter shopCartPrinter;
 
         public ShopApp(IOutput output,
             IInput input,
             IShopCartManager shopCartManager,
+            IInputRetriever<string> productNameRetriever,
+            IInputRetriever<decimal> productPriceRetriever,
+            IInputRetriever<int> productIdentifierRetriever,
             ILog log) 
         {
             this.output = output;
             this.input = input;
             this.shopCartManager = shopCartManager;
+            this.productNameRetriever = productNameRetriever;
+            this.productPriceRetriever = productPriceRetriever;
+            this.productIdentifierRetriever = productIdentifierRetriever;
             this.log = log;
             shopCartPrinter = new ShopCartPrinter(output, this.shopCartManager);
         }
@@ -36,22 +45,19 @@ namespace BusinessSolutionChatGpt
             do
             {
                 output.WriteLine(string.Empty);
-                output.WriteLine("Naciśnij 1 aby rozpocząć dodawanie produktu do koszyka");
-                output.WriteLine("Naciśnij 2 aby rozpocząć wyświetlić wszystkie produkty w koszyku");
-                output.WriteLine("Naciśnij 3 aby rozpocząć zobaczyć ile masz do zapłacenia");
-                output.WriteLine("Naciśnij 4 aby usnąć konkretny produkt");
-                output.WriteLine("Naciśnij 5 aby usunąć wszystkie książki");
-                output.WriteLine("Naciśnij Esc aby zakończyć pracę");
+                output.WriteLine(Resources.Resources.AddProductInstruction);
+                output.WriteLine(Resources.Resources.ShowAllProductsInstruction);
+                output.WriteLine(Resources.Resources.ShowTotalCostInstruction);
+                output.WriteLine(Resources.Resources.RemoveSpecifiedProductInstruction);
+                output.WriteLine(Resources.Resources.RemoveAllProductsInstruction);
+                output.WriteLine(Resources.Resources.StopShopAppInstruction);
 
                 readedKey = input.ReadKey();
                 switch (readedKey.Key)
                 {
                     case ConsoleKey.D1:
-                        IInputRetriever<string> productNameRetriever = new LoopDataRetriever<string>(output, input, new FluentNotNullOrEmptyStringValidator("Nazwa została nie podana", "Nazwa jest pusta"), "Podaj nazwę produktu");
                         string productName = productNameRetriever.TryGet()!;
-
-                        IInputRetriever<decimal> priceProductRetriever = new LoopDataRetriever<decimal>(output, input, new FluentPositiveDecimalValidator("Cena nie została podana", "Cena jest psuta", "Ciąg znaków to nie cena", "Cena nie może być mniejsza od 0"), "Podaj cenę produktu");
-                        decimal productPrice = priceProductRetriever.TryGet();
+                        decimal productPrice = productPriceRetriever.TryGet();
                         var product = new AddProductDTO { Name = productName, Price = productPrice };
                         log.Debug($"Użytkownik stworzył produkt {JsonConvert.SerializeObject(product)}");
                         shopCartManager.Add(product);
@@ -65,9 +71,7 @@ namespace BusinessSolutionChatGpt
                         output.WriteLineWithEscape($"Całkowity koszt to: {shopCartManager.GetTotalCost().ToString(CultureInfo.InvariantCulture)}");
                         break;
                     case ConsoleKey.D4:
-                        AbstractValidator<InputDTO<int>> productValidator = new FluentProductIdValidator("Podany ciąg znaków jest null", "Podany ciąg znaków jest pusty", "Niepoprawny identyfikator", "Produkt nie istnieje", shopCartManager);
-                        IInputRetriever<int> indexRetriever = new LoopDataRetriever<int>(output, input, productValidator, "Podaj identyfikator produktu");
-                        var productId = indexRetriever.TryGet();
+                        var productId = productIdentifierRetriever.TryGet();
                         log.Debug($"Użytkownik próbuje produkt {productId}");
                         shopCartManager.Delete(productId);
                         output.WriteLine($"Usunięto produkt o identyfikatorze: {productId}");

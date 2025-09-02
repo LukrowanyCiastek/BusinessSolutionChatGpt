@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace BusinessSolutionChatGpt.Validators
 {
-    internal class FluentNotNullOrEmptyStringValidator : AbstractValidator<InputDTO<string>>
+    internal class NotNullOrEmptyStringValidator : AbstractValidator<InputDTO<string>>
     {
-        public FluentNotNullOrEmptyStringValidator(string notNullMessage, string emptyMessage)
+        public NotNullOrEmptyStringValidator(string notNullMessage, string emptyMessage)
         {
             RuleFor(x => x.Raw)
                 .NotNull().WithMessage(notNullMessage)
