@@ -19,7 +19,7 @@ namespace BusinessSolutionChatGpt
         private readonly IInputRetriever<string> productNameRetriever;
         private readonly IInputRetriever<decimal> productPriceRetriever;
         private readonly IInputRetriever<int> productIdentifierRetriever;
-        private readonly IStringLocalizer<Resources.Resources> localizer;
+        private readonly IStringLocalizer<Resources.SharedResource> localizer;
         private readonly ILog log;
         private readonly ShopCartPrinter shopCartPrinter;
 
@@ -29,7 +29,7 @@ namespace BusinessSolutionChatGpt
             ProductNameLoopDataRetriever productNameRetriever,
             ProductPriceLoopDataRetriever productPriceRetriever,
             ProductIdLoopDataRetriever productIdentifierRetriever,
-            IStringLocalizer<Resources.Resources> localizer,
+            IStringLocalizer<Resources.SharedResource> localizer,
             ILog log) 
         {
             this.output = output;
@@ -49,12 +49,12 @@ namespace BusinessSolutionChatGpt
             do
             {
                 output.WriteLine(string.Empty);
-                output.WriteLine(localizer["AddProductInstruction"].Value);
-                output.WriteLine(localizer["ShowAllProductsInstruction"].Value);
-                output.WriteLine(localizer["ShowTotalCostInstruction"].Value);
-                output.WriteLine(localizer["RemoveSpecifiedProductInstruction"].Value);
-                output.WriteLine(localizer["RemoveAllProductsInstruction"].Value);
-                output.WriteLine(localizer["StopShopAppInstruction"].Value);
+                output.WriteLine(localizer["AddProductInstruction"]);
+                output.WriteLine(localizer["ShowAllProductsInstruction"]);
+                output.WriteLine(localizer["ShowTotalCostInstruction"]);
+                output.WriteLine(localizer["RemoveSpecifiedProductInstruction"]);
+                output.WriteLine(localizer["RemoveAllProductsInstruction"]);
+                output.WriteLine(localizer["StopShopAppInstruction"]);
 
                 readedKey = input.ReadKey();
                 switch (readedKey.Key)

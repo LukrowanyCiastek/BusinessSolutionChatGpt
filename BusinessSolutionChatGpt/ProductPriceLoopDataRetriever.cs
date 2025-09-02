@@ -8,8 +8,8 @@ namespace BusinessSolutionChatGpt
     {
         public ProductPriceLoopDataRetriever(IOutput output,
             IInput input,
-            ProductPricelValidator dataValidator,
-            IStringLocalizer<Resources.Resources> localizer)
+            ProductPriceValidator dataValidator,
+            IStringLocalizer<Resources.SharedResource> localizer)
             : base(output, input, dataValidator, localizer["ProductPriceInstruction"])
         {
         }
