@@ -68,10 +68,10 @@ namespace BusinessSolutionChatGpt
             serviceCollection.AddSingleton<IGetProductService, GetProductService>();
             serviceCollection.AddSingleton<IDeleteProductService, DeleteProductService>();
             serviceCollection.AddScoped<IShopCartManager, ShopCartManager>();
-            serviceCollection.AddSingleton<ProductNameValidator>();
-            serviceCollection.AddSingleton<ProductIdValidator>();
+            serviceCollection.AddTransient<ProductNameValidator>();
+            serviceCollection.AddTransient<ProductIdValidator>();
             serviceCollection.AddSingleton<ProductNameLoopDataRetriever>();
-            serviceCollection.AddSingleton<ProductPriceValidator>();
+            serviceCollection.AddTransient<ProductPriceValidator>();
             serviceCollection.AddSingleton<ProductPriceLoopDataRetriever>();
             serviceCollection.AddSingleton<ProductIdLoopDataRetriever>();
             serviceCollection.AddSingleton<IShopApp, ShopApp>();
