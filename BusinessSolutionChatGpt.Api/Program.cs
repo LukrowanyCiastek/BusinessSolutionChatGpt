@@ -1,55 +1,60 @@
-﻿using BusinessSolutionChatGpt.Core;
+
+using BusinessSolutionChatGpt.Core;
 using BusinessSolutionChatGpt.Core.Interfaces;
 using BusinessSolutionChatGpt.Core.Model;
 using BusinessSolutionChatGpt.Core.Services;
 using BusinessSolutionChatGpt.Core.Services.Interfaces;
-using BusinessSolutionChatGpt.Infrastructure;
-using BusinessSolutionChatGpt.Infrastructure.Interfaces;
-using BusinessSolutionChatGpt.Interfaces;
+using BusinessSolutionChatGpt.Core.Validators;
 using BusinessSolutionChatGpt.Services;
 using BusinessSolutionChatGpt.Validators;
 using log4net;
 using log4net.Config;
 using log4net.Repository;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
-using System.Globalization;
 using System.Reflection;
 
-namespace BusinessSolutionChatGpt
+namespace BusinessSolutionChatGpt.Api
 {
-    internal class Program
+
+    public class Program
     {
+
         private static readonly ILog log = LogManager.GetLogger(typeof(Program));
 
-        static int Main(string[] args)
+        public static void Main(string[] args)
         {
-            log.Info("Aplikacja rozpoczęła pracę");
+            log.Info("Aplikacja rozpocz�a prac�");
             ILoggerRepository logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly()!);
             XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
 
-            try
+            var builder = WebApplication.CreateBuilder(args);
+
+            var serviceCollection = new ServiceCollection();
+            ConfigureServices(serviceCollection);
+            // Add services to the container.
+
+            builder.Services.AddControllers();
+            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+
+            var app = builder.Build();
+
+            // Configure the HTTP request pipeline.
+            if (app.Environment.IsDevelopment())
             {
-                var serviceCollection = new ServiceCollection();
-                ConfigureServices(serviceCollection);
-
-                var serviceProvider = serviceCollection.BuildServiceProvider();
-
-                CultureInfo.CurrentUICulture = new CultureInfo("pl");
-                var output = serviceProvider.GetRequiredService<IOutput>();
-                var manager = serviceProvider.GetRequiredService<IShopApp>();
-                manager.Start();
-
-                output.WriteLineWithEscape("Program zakończył działanie");
-
-                return 0;
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
-            catch (Exception ex)
-            {
-                log.Error("Program przerwał pracę przez błąd.", ex);
-                return -1;
-            }
+
+            app.UseHttpsRedirection();
+
+            app.UseAuthorization();
+
+
+            app.MapControllers();
+
+            app.Run();
         }
 
         private static void ConfigureServices(ServiceCollection serviceCollection)
@@ -62,21 +67,14 @@ namespace BusinessSolutionChatGpt
             });
             serviceCollection.AddLocalization(options => options.ResourcesPath = "Resources");
             serviceCollection.AddSingleton(x => x.GetRequiredService<IStringLocalizerFactory>().Create("SharedResource", typeof(Program).Assembly.GetName().Name!));
-            serviceCollection.AddSingleton<IOutput, ConsoleOutput>();
-            serviceCollection.AddSingleton<IInput, ConsoleInput>();
             serviceCollection.AddSingleton<IList<Product>>(new List<Product>());
             serviceCollection.AddSingleton<IProductRepository, ProductRepository>();
             serviceCollection.AddSingleton<IAddProductService, AddProductService>();
             serviceCollection.AddSingleton<IGetProductService, GetProductService>();
             serviceCollection.AddSingleton<IDeleteProductService, DeleteProductService>();
             serviceCollection.AddScoped<IShopCartManager, ShopCartManager>();
-            serviceCollection.AddTransient<ProductNameValidator>();
-            serviceCollection.AddTransient<ProductIdValidator>();
-            serviceCollection.AddSingleton<ProductNameLoopDataRetriever>();
-            serviceCollection.AddTransient<ProductPriceValidator>();
-            serviceCollection.AddSingleton<ProductPriceLoopDataRetriever>();
-            serviceCollection.AddSingleton<ProductIdLoopDataRetriever>();
-            serviceCollection.AddSingleton<IShopApp, ShopApp>();
+            serviceCollection.AddTransient<AddProductValidator>();
+            serviceCollection.AddTransient<ProductExistValidator>();
         }
     }
 }

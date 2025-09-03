@@ -1,9 +1,7 @@
-﻿using BusinessSolutionChatGpt.DTO.Input;
-using BusinessSolutionChatGpt.DTO.Product;
+﻿using BusinessSolutionChatGpt.Core.DTO.Product;
+using BusinessSolutionChatGpt.Core.Interfaces;
 using BusinessSolutionChatGpt.Infrastructure.Interfaces;
 using BusinessSolutionChatGpt.Interfaces;
-using BusinessSolutionChatGpt.Validators;
-using FluentValidation;
 using log4net;
 using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
@@ -18,7 +16,7 @@ namespace BusinessSolutionChatGpt
         private readonly IShopCartManager shopCartManager;
         private readonly IInputRetriever<string> productNameRetriever;
         private readonly IInputRetriever<decimal> productPriceRetriever;
-        private readonly IInputRetriever<int> productIdentifierRetriever;
+        private readonly IInputRetriever<long> productIdentifierRetriever;
         private readonly IStringLocalizer localizer;
         private readonly ILog log;
         private readonly ShopCartPrinter shopCartPrinter;
@@ -77,7 +75,7 @@ namespace BusinessSolutionChatGpt
                     case ConsoleKey.D4:
                         var productId = productIdentifierRetriever.TryGet();
                         log.Debug($"Użytkownik próbuje produkt {productId}");
-                        shopCartManager.Delete(productId);
+                        shopCartManager.Delete(productId - 1);
                         output.WriteLine($"Usunięto produkt o identyfikatorze: {productId}");
                         break;
                     case ConsoleKey.D5:

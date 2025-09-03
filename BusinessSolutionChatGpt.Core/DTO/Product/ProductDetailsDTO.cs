@@ -1,6 +1,6 @@
-﻿namespace BusinessSolutionChatGpt.DTO.Product
+﻿namespace BusinessSolutionChatGpt.Core.DTO.Product
 {
-    internal class ProductDetailsDTO
+    public class ProductDetailsDTO
     {
         public string? Name { get; set; }
 

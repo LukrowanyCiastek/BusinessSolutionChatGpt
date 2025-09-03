@@ -1,9 +1,9 @@
-﻿using BusinessSolutionChatGpt.Interfaces;
-using BusinessSolutionChatGpt.Model;
+﻿using BusinessSolutionChatGpt.Core.Interfaces;
+using BusinessSolutionChatGpt.Core.Model;
 
-namespace BusinessSolutionChatGpt
+namespace BusinessSolutionChatGpt.Core
 {
-    internal class ProductRepository : IProductRepository
+    public class ProductRepository : IProductRepository
     {
         private readonly IList<Product> products;
 
@@ -14,11 +14,11 @@ namespace BusinessSolutionChatGpt
 
         void IProductRepository.Add(Product product) => products.Add(product);
 
-        void IProductRepository.Delete(int id) => products.RemoveAt(id - 1);
+        void IProductRepository.Delete(long id) => products.RemoveAt((int)id);
 
         void IProductRepository.DeleteAll() => products.Clear();
 
-        bool IProductRepository.Exists(int id) => id >= 0 && id < products.Count;
+        bool IProductRepository.Exists(long id) => id >= 0 && id < products.Count;
 
         List<Product> IProductRepository.GetAll() => products.ToList();
 

@@ -1,12 +1,12 @@
-﻿using BusinessSolutionChatGpt.DTO.Input;
-using BusinessSolutionChatGpt.Interfaces;
+﻿using BusinessSolutionChatGpt.Core.Interfaces;
+using BusinessSolutionChatGpt.DTO.Input;
 using FluentValidation;
 using Microsoft.Extensions.Localization;
 using System.Globalization;
 
 namespace BusinessSolutionChatGpt.Validators
 {
-    internal class ProductIdValidator : AbstractValidator<InputDTO<int>>
+    internal class ProductIdValidator : AbstractValidator<InputDTO<long>>
     {
         public ProductIdValidator(IStringLocalizer localizer, IShopCartManager shopCartManager)
         {
@@ -15,7 +15,7 @@ namespace BusinessSolutionChatGpt.Validators
                 .NotEmpty().WithMessage(localizer["ProductEmptyIdentifierValidationMessage"])
                 .Must((dto, value) =>
                 {
-                    if (int.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out var result))
+                    if (long.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out var result))
                     {
                         dto.Value = result;
                         return dto.Value > 0;

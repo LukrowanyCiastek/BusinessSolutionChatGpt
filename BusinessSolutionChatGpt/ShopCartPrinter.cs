@@ -1,5 +1,5 @@
-﻿using BusinessSolutionChatGpt.Infrastructure.Interfaces;
-using BusinessSolutionChatGpt.Interfaces;
+﻿using BusinessSolutionChatGpt.Core.Interfaces;
+using BusinessSolutionChatGpt.Infrastructure.Interfaces;
 using System.Globalization;
 
 namespace BusinessSolutionChatGpt

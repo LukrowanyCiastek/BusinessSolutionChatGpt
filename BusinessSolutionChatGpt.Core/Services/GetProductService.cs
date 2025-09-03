@@ -1,10 +1,10 @@
-﻿using BusinessSolutionChatGpt.DTO.Product;
-using BusinessSolutionChatGpt.Interfaces;
-using BusinessSolutionChatGpt.Services.Interfaces;
+﻿using BusinessSolutionChatGpt.Core.DTO.Product;
+using BusinessSolutionChatGpt.Core.Interfaces;
+using BusinessSolutionChatGpt.Core.Services.Interfaces;
 
-namespace BusinessSolutionChatGpt.Services
+namespace BusinessSolutionChatGpt.Core.Services
 {
-    internal class GetProductService : IGetProductService
+    public class GetProductService : IGetProductService
     {
         private readonly IProductRepository repository;
 
@@ -13,7 +13,7 @@ namespace BusinessSolutionChatGpt.Services
             this.repository = repository;
         }
 
-        bool IGetProductService.Exists(int id) => repository.Exists(id);
+        bool IGetProductService.Exists(long id) => repository.Exists(id);
 
         List<ProductDetailsDTO> IGetProductService.GetAll() => repository.GetAll().Select(x => new ProductDetailsDTO { Name = x.Name!, Price = x.Price }).ToList();
 

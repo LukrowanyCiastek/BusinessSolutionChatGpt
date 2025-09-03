@@ -1,9 +1,0 @@
-﻿using BusinessSolutionChatGpt.DTO.Product;
-
-namespace BusinessSolutionChatGpt.Services.Interfaces
-{
-    internal interface IAddProductService
-    {
-        void Add(AddProductDTO product);
-    }
-}
