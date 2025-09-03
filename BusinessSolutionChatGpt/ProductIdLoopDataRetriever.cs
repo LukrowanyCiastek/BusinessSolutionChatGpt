@@ -4,7 +4,7 @@ using Microsoft.Extensions.Localization;
 
 namespace BusinessSolutionChatGpt
 {
-    internal class ProductIdLoopDataRetriever : LoopDataRetriever<int>
+    internal class ProductIdLoopDataRetriever : LoopDataRetriever<long>
     {
         public ProductIdLoopDataRetriever(IOutput output,
             IInput input,

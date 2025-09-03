@@ -20,6 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BusinessSolutionChatGpt.Core\BusinessSolutionChatGpt.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Resources\SharedResource.pl.Designer.cs">
       <DependentUpon>SharedResource.pl.resx</DependentUpon>
       <DesignTime>True</DesignTime>

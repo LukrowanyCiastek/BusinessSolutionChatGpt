@@ -1,9 +1,9 @@
-﻿using BusinessSolutionChatGpt.Interfaces;
-using BusinessSolutionChatGpt.Services.Interfaces;
+﻿using BusinessSolutionChatGpt.Core.Interfaces;
+using BusinessSolutionChatGpt.Core.Services.Interfaces;
 
 namespace BusinessSolutionChatGpt.Services
 {
-    internal class DeleteProductService : IDeleteProductService
+    public class DeleteProductService : IDeleteProductService
     {
         private readonly IProductRepository productRepository;
 
@@ -12,7 +12,7 @@ namespace BusinessSolutionChatGpt.Services
             this.productRepository = productRepository;
         }
 
-        void IDeleteProductService.Delete(int productId) => productRepository.Delete(productId);
+        void IDeleteProductService.Delete(long productId) => productRepository.Delete(productId);
 
         void IDeleteProductService.DeleteAll() => productRepository.DeleteAll();
     }

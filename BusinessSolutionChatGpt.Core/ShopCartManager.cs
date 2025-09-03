@@ -1,12 +1,12 @@
-﻿using BusinessSolutionChatGpt.DTO.Product;
-using BusinessSolutionChatGpt.Interfaces;
-using BusinessSolutionChatGpt.Services.Interfaces;
+﻿using BusinessSolutionChatGpt.Core.DTO.Product;
+using BusinessSolutionChatGpt.Core.Interfaces;
+using BusinessSolutionChatGpt.Core.Services.Interfaces;
 
-namespace BusinessSolutionChatGpt
+namespace BusinessSolutionChatGpt.Core
 {
-    internal class ShopCartManager : IShopCartManager
+    public class ShopCartManager : IShopCartManager
     {
-        private IAddProductService addProductService;
+        private readonly IAddProductService addProductService;
         private readonly IGetProductService getProductService;
         private readonly IDeleteProductService deleteProductService;
 
@@ -25,8 +25,8 @@ namespace BusinessSolutionChatGpt
 
         void IShopCartManager.DeleteAll() => deleteProductService.DeleteAll();
 
-        void IShopCartManager.Delete(int productId) => deleteProductService.Delete(productId);
+        void IShopCartManager.Delete(long productId) => deleteProductService.Delete(productId);
 
-        bool IShopCartManager.Exists(int productId) => getProductService.Exists(productId);
+        bool IShopCartManager.Exists(long productId) => getProductService.Exists(productId);
     }
 }

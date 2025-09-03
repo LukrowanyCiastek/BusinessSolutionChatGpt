@@ -21,7 +21,7 @@ namespace BusinessSolutionChatGpt.Validators
                     return false;
                 })
                 .WithMessage(parseMessage)
-                .Must((dto, value) => dto.Value > 0)
+                .Must((dto, value) => dto.Value >= 0)
                 .WithMessage(notPositiveMessage);
         }
     }
