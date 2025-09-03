@@ -1,11 +1,13 @@
-﻿using BusinessSolutionChatGpt.DTO.Product;
+﻿using BusinessSolutionChatGpt.DTO.Input;
+using BusinessSolutionChatGpt.DTO.Product;
 using BusinessSolutionChatGpt.Infrastructure.Interfaces;
 using BusinessSolutionChatGpt.Interfaces;
-using BusinessSolutionChatGpt.Parsers.Interfaces;
 using BusinessSolutionChatGpt.Validators;
-using BusinessSolutionChatGpt.Validators.Interfaces;
+using FluentValidation;
 using log4net;
+using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
+using System.Globalization;
 
 namespace BusinessSolutionChatGpt
 {
@@ -14,26 +16,29 @@ namespace BusinessSolutionChatGpt
         private readonly IOutput output;
         private readonly IInput input;
         private readonly IShopCartManager shopCartManager;
-        private readonly IParser<string> stringParser;
-        private readonly IParser<decimal> decimalParser;
-        private readonly IParser<int> intParser;
+        private readonly IInputRetriever<string> productNameRetriever;
+        private readonly IInputRetriever<decimal> productPriceRetriever;
+        private readonly IInputRetriever<int> productIdentifierRetriever;
+        private readonly IStringLocalizer localizer;
         private readonly ILog log;
         private readonly ShopCartPrinter shopCartPrinter;
 
         public ShopApp(IOutput output,
             IInput input,
             IShopCartManager shopCartManager,
-            IParser<string> stringParser,
-            IParser<decimal> decimalParser,
-            IParser<int> intParser,
+            ProductNameLoopDataRetriever productNameRetriever,
+            ProductPriceLoopDataRetriever productPriceRetriever,
+            ProductIdLoopDataRetriever productIdentifierRetriever,
+            IStringLocalizer localizer,
             ILog log) 
         {
             this.output = output;
             this.input = input;
             this.shopCartManager = shopCartManager;
-            this.stringParser = stringParser;
-            this.decimalParser = decimalParser;
-            this.intParser = intParser;
+            this.productNameRetriever = productNameRetriever;
+            this.productPriceRetriever = productPriceRetriever;
+            this.productIdentifierRetriever = productIdentifierRetriever;
+            this.localizer = localizer;
             this.log = log;
             shopCartPrinter = new ShopCartPrinter(output, this.shopCartManager);
         }
@@ -41,28 +46,22 @@ namespace BusinessSolutionChatGpt
         public void Start()
         {
             ConsoleKeyInfo readedKey;
-
-            IValidator<string> stringValidator = new NotNullOrEmptyStringValidator();
             do
             {
                 output.WriteLine(string.Empty);
-                output.WriteLine("Naciśnij 1 aby rozpocząć dodawanie produktu do koszyka");
-                output.WriteLine("Naciśnij 2 aby rozpocząć wyświetlić wszystkie produkty w koszyku");
-                output.WriteLine("Naciśnij 3 aby rozpocząć zobaczyć ile masz do zapłacenia");
-                output.WriteLine("Naciśnij 4 aby usnąć konkretny produkt");
-                output.WriteLine("Naciśnij 5 aby usunąć wszystkie książki");
-                output.WriteLine("Naciśnij Esc aby zakończyć pracę");
+                output.WriteLine(localizer["AddProductInstruction"]);
+                output.WriteLine(localizer["ShowAllProductsInstruction"]);
+                output.WriteLine(localizer["ShowTotalCostInstruction"]);
+                output.WriteLine(localizer["RemoveSpecifiedProductInstruction"]);
+                output.WriteLine(localizer["RemoveAllProductsInstruction"]);
+                output.WriteLine(localizer["StopShopAppInstruction"]);
 
                 readedKey = input.ReadKey();
                 switch (readedKey.Key)
                 {
                     case ConsoleKey.D1:
-                        IInputRetriever<string> productNameRetriever = new LoopDataRetriever<string>(output, input, stringValidator, stringValidator, stringParser, "Podaj nazwę produktu", "Nazwa niepoprawna spróbuj ponownie");
                         string productName = productNameRetriever.TryGet()!;
-
-                        IValidator<string> decimalValidator = new PositiveDecimalValidator(decimalParser);
-                        IInputRetriever<decimal> priceProductRetriever = new LoopDataRetriever<decimal>(output, input, stringValidator, decimalValidator, decimalParser, "Podaj cenę produktu", "Cena niepoprawna spróbuj ponownie");
-                        decimal productPrice = priceProductRetriever.TryGet();
+                        decimal productPrice = productPriceRetriever.TryGet();
                         var product = new AddProductDTO { Name = productName, Price = productPrice };
                         log.Debug($"Użytkownik stworzył produkt {JsonConvert.SerializeObject(product)}");
                         shopCartManager.Add(product);
@@ -73,12 +72,10 @@ namespace BusinessSolutionChatGpt
                         break;
                     case ConsoleKey.D3:
                         log.Debug($"Użytkownik wyświetił całkowity koszt");
-                        output.WriteLine($"Całkowity koszt to: {shopCartManager.GetTotalCost()}");
+                        output.WriteLineWithEscape($"Całkowity koszt to: {shopCartManager.GetTotalCost().ToString(CultureInfo.InvariantCulture)}");
                         break;
                     case ConsoleKey.D4:
-                        IValidator<string> productValidator = new ProductIdValidator(intParser, shopCartManager);
-                        IInputRetriever<int> indexRetriever = new LoopDataRetriever<int>(output, input, stringValidator, productValidator, intParser, "Podaj identyfikator produktu", "Produkt nie istnieje");
-                        var productId = indexRetriever.TryGet();
+                        var productId = productIdentifierRetriever.TryGet();
                         log.Debug($"Użytkownik próbuje produkt {productId}");
                         shopCartManager.Delete(productId);
                         output.WriteLine($"Usunięto produkt o identyfikatorze: {productId}");

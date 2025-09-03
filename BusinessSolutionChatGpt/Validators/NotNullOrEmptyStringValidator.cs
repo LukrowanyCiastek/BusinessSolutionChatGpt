@@ -1,9 +1,20 @@
-﻿using BusinessSolutionChatGpt.Validators.Interfaces;
+﻿using BusinessSolutionChatGpt.DTO.Input;
+using FluentValidation;
 
 namespace BusinessSolutionChatGpt.Validators
 {
-    internal class NotNullOrEmptyStringValidator : IValidator<string>
+    internal class NotNullOrEmptyStringValidator : AbstractValidator<InputDTO<string>>
     {
-        bool IValidator<string>.IsValid(string? input) => !string.IsNullOrEmpty(input);
+        public NotNullOrEmptyStringValidator(string notNullMessage, string emptyMessage)
+        {
+            RuleFor(x => x.Raw)
+                .NotNull().WithMessage(notNullMessage)
+                .NotEmpty().WithMessage(emptyMessage)
+                .Must((dto, value) =>
+                {
+                    dto.Value = value;
+                    return true;
+                });
+        }
     }
 }

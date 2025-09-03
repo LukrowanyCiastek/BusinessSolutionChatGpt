@@ -1,7 +1,8 @@
-﻿using BusinessSolutionChatGpt.Infrastructure.Interfaces;
+﻿using BusinessSolutionChatGpt.DTO.Input;
+using BusinessSolutionChatGpt.Infrastructure.Interfaces;
 using BusinessSolutionChatGpt.Interfaces;
-using BusinessSolutionChatGpt.Parsers.Interfaces;
-using BusinessSolutionChatGpt.Validators.Interfaces;
+using FluentValidation;
+using FluentValidation.Results;
 
 namespace BusinessSolutionChatGpt
 {
@@ -9,53 +10,45 @@ namespace BusinessSolutionChatGpt
     {
         private readonly IOutput output;
         private readonly IInput input;
-        private readonly string instruction;
-        private readonly string? repeatMessage;
-        private readonly IParser<T> parser;
-        private readonly IValidator<string> messageValidator;
-        private readonly IValidator<string> dataValidator;
+        private readonly string? instruction;
+        private readonly AbstractValidator<InputDTO<T>> dataValidator;
 
         public LoopDataRetriever(IOutput output,
             IInput input,
-            IValidator<string> messageValidator,
-            IValidator<string> dataValidator,
-            IParser<T> parser,
-            string instruction,
-            string? repeatMessage)
+            AbstractValidator<InputDTO<T>> dataValidator,
+            string? instruction)
         {
+            this.instruction = instruction;
             this.output = output;
             this.input = input;
-            this.messageValidator = messageValidator;
             this.dataValidator = dataValidator;
-            this.instruction = instruction;
-            this.repeatMessage = repeatMessage;
-            this.parser = parser;
         }
 
         T? IInputRetriever<T>.TryGet()
         {
-            bool isCorrect;
+            ValidationResult dataValidationResult;
             T? result = default;
             do
             {
-                output.WriteLineWithEscape(instruction);
+                output.WriteLineWithEscape(instruction!);
 
-                string? rawData = input.ReadLine();
-                isCorrect = dataValidator.IsValid(rawData);
-
-                if (!isCorrect )
+                var dto = new InputDTO<T>
                 {
-                    if (messageValidator.IsValid(repeatMessage!))
-                    {
-                        output.WriteLineWithEscape(repeatMessage!);
-                    }
+                    Raw = input.ReadLine()
+                };
+
+                dataValidationResult = dataValidator.Validate(dto);
+
+                if (!dataValidationResult.IsValid)
+                {
+                    output.WriteLineWithEscape(dataValidationResult.Errors.First().ErrorMessage);
                 }
                 else
                 {
-                    result = parser.Parse(rawData!);
+                    result = dto.Value;
                 }
             }
-            while (!isCorrect);
+            while (!dataValidationResult.IsValid);
 
             return result;
         }

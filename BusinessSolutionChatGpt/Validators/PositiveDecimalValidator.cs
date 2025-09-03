@@ -1,28 +1,28 @@
-﻿using BusinessSolutionChatGpt.Parsers.Interfaces;
-using BusinessSolutionChatGpt.Validators.Interfaces;
+﻿using BusinessSolutionChatGpt.DTO.Input;
+using FluentValidation;
+using System.Globalization;
 
 namespace BusinessSolutionChatGpt.Validators
 {
-    internal class PositiveDecimalValidator : IValidator<string>
+    internal class PositiveDecimalValidator : AbstractValidator<InputDTO<decimal>>
     {
-        private readonly IValidator<string> decimalValidator;
-        private readonly IParser<decimal> parser;
-
-        public PositiveDecimalValidator(IParser<decimal> parser)
+        public PositiveDecimalValidator(string nullMessage, string emptyMessage, string parseMessage, string notPositiveMessage)
         {
-            this.decimalValidator = new DecimalValidator();
-            this.parser = parser;
-        }
-
-        bool IValidator<string>.IsValid(string? input)
-        {
-            if(decimalValidator.IsValid(input))
-            {
-                decimal value = this.parser.Parse(input!);
-                return value > 0;
-            }
-
-            return false;
+            RuleFor(x => x.Raw)
+                .NotNull().WithMessage(nullMessage)
+                .NotEmpty().WithMessage(emptyMessage)
+                .Must((dto, value) =>
+                {
+                    if (decimal.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out var result))
+                    {
+                        dto.Value = result;
+                        return true;
+                    }
+                    return false;
+                })
+                .WithMessage(parseMessage)
+                .Must((dto, value) => dto.Value > 0)
+                .WithMessage(notPositiveMessage);
         }
     }
 }

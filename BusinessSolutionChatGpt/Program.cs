@@ -2,14 +2,16 @@
 using BusinessSolutionChatGpt.Infrastructure.Interfaces;
 using BusinessSolutionChatGpt.Interfaces;
 using BusinessSolutionChatGpt.Model;
-using BusinessSolutionChatGpt.Parsers;
-using BusinessSolutionChatGpt.Parsers.Interfaces;
 using BusinessSolutionChatGpt.Services;
 using BusinessSolutionChatGpt.Services.Interfaces;
+using BusinessSolutionChatGpt.Validators;
 using log4net;
 using log4net.Config;
 using log4net.Repository;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
+using System.Globalization;
 using System.Reflection;
 
 namespace BusinessSolutionChatGpt
@@ -31,6 +33,7 @@ namespace BusinessSolutionChatGpt
 
                 var serviceProvider = serviceCollection.BuildServiceProvider();
 
+                CultureInfo.CurrentUICulture = new CultureInfo("pl");
                 var output = serviceProvider.GetRequiredService<IOutput>();
                 var manager = serviceProvider.GetRequiredService<IShopApp>();
                 manager.Start();
@@ -49,18 +52,28 @@ namespace BusinessSolutionChatGpt
         private static void ConfigureServices(ServiceCollection serviceCollection)
         {
             serviceCollection.AddSingleton(log);
+            serviceCollection.AddLogging(builder =>
+            {
+                builder.AddConsole();
+                builder.SetMinimumLevel(LogLevel.Warning);
+            });
+            serviceCollection.AddLocalization(options => options.ResourcesPath = "Resources");
+            serviceCollection.AddSingleton(x => x.GetRequiredService<IStringLocalizerFactory>().Create("SharedResource", typeof(Program).Assembly.GetName().Name!));
             serviceCollection.AddSingleton<IOutput, ConsoleOutput>();
             serviceCollection.AddSingleton<IInput, ConsoleInput>();
-            serviceCollection.AddTransient<IParser<string>, StringParser>();
-            serviceCollection.AddTransient<IParser<decimal>, DecimalParser>();
-            serviceCollection.AddTransient<IParser<int>, IntegerParser>();
             serviceCollection.AddSingleton<IList<Product>>(new List<Product>());
             serviceCollection.AddSingleton<IProductRepository, ProductRepository>();
             serviceCollection.AddSingleton<IAddProductService, AddProductService>();
             serviceCollection.AddSingleton<IGetProductService, GetProductService>();
             serviceCollection.AddSingleton<IDeleteProductService, DeleteProductService>();
-            serviceCollection.AddSingleton<IShopCartManager, ShopCartManager>();
-            serviceCollection.AddSingleton<IShopApp, ShopApp>();            
+            serviceCollection.AddScoped<IShopCartManager, ShopCartManager>();
+            serviceCollection.AddTransient<ProductNameValidator>();
+            serviceCollection.AddTransient<ProductIdValidator>();
+            serviceCollection.AddSingleton<ProductNameLoopDataRetriever>();
+            serviceCollection.AddTransient<ProductPriceValidator>();
+            serviceCollection.AddSingleton<ProductPriceLoopDataRetriever>();
+            serviceCollection.AddSingleton<ProductIdLoopDataRetriever>();
+            serviceCollection.AddSingleton<IShopApp, ShopApp>();
         }
     }
 }

@@ -1,31 +1,30 @@
-﻿using BusinessSolutionChatGpt.Interfaces;
-using BusinessSolutionChatGpt.Parsers.Interfaces;
-using BusinessSolutionChatGpt.Validators.Interfaces;
+﻿using BusinessSolutionChatGpt.DTO.Input;
+using BusinessSolutionChatGpt.Interfaces;
+using FluentValidation;
+using Microsoft.Extensions.Localization;
+using System.Globalization;
 
 namespace BusinessSolutionChatGpt.Validators
 {
-    internal class ProductIdValidator : IValidator<string>
+    internal class ProductIdValidator : AbstractValidator<InputDTO<int>>
     {
-        private readonly IShopCartManager shopCartManager;
-        private readonly IParser<int> integerParser;
-        private readonly IValidator<string> integerValidator;
-
-        public ProductIdValidator(IParser<int> integerParser, IShopCartManager shopCartManager) 
+        public ProductIdValidator(IStringLocalizer localizer, IShopCartManager shopCartManager)
         {
-            this.integerValidator = new PositiveIntegerValidator(integerParser);
-            this.shopCartManager = shopCartManager;
-            this.integerParser = integerParser;
-        }
-
-        bool IValidator<string>.IsValid(string? input)
-        {
-            if (integerValidator.IsValid(input))
-            {
-                int value = this.integerParser.Parse(input!);
-                return shopCartManager.Exists(value - 1);
-            }
-
-            return false;
+            RuleFor(x => x.Raw)
+                .NotNull().WithMessage(localizer["ProductMissingIdentifierValidationMessage"])
+                .NotEmpty().WithMessage(localizer["ProductEmptyIdentifierValidationMessage"])
+                .Must((dto, value) =>
+                {
+                    if (int.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out var result))
+                    {
+                        dto.Value = result;
+                        return dto.Value > 0;
+                    }
+                    return false;
+                })
+                .WithMessage(localizer["ProductNotIntegerIdentifierValidationMessage"])
+                .Must((dto, value) => shopCartManager.Exists(dto.Value - 1))
+                .WithMessage(localizer["ProductNotExistValidationMessage"]);
         }
     }
 }
