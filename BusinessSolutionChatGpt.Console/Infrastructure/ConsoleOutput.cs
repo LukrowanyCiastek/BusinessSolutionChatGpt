@@ -1,17 +1,17 @@
-﻿using BusinessSolutionChatGpt.Infrastructure.Interfaces;
+﻿using BusinessSolutionChatGpt.Console.Infrastructure.Interfaces;
 
-namespace BusinessSolutionChatGpt.Infrastructure
+namespace BusinessSolutionChatGpt.Console.Infrastructure
 {
     internal class ConsoleOutput : IOutput
     {
         public void WriteLine(string message)
         {
-            Console.WriteLine(message);
+            System.Console.WriteLine(message);
         }
 
         void IOutput.WriteLineWithEscape(string message)
         {
-            Console.WriteLine(string.Empty);
+            System.Console.WriteLine(string.Empty);
             WriteLine(message);
         }
     }

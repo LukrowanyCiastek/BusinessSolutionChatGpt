@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace BusinessSolutionChatGpt.Resources {
+namespace BusinessSolutionChatGpt.Console.Resources {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace BusinessSolutionChatGpt.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BusinessSolutionChatGpt.Resources.SharedResource", typeof(SharedResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BusinessSolutionChatGpt.Console.Resources.SharedResource", typeof(SharedResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -70,29 +70,11 @@ namespace BusinessSolutionChatGpt.Resources {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Identyfikator produktu jest pusty.
-        /// </summary>
-        internal static string ProductEmptyIdentifierValidationMessage {
-            get {
-                return ResourceManager.GetString("ProductEmptyIdentifierValidationMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Nazwa jest pusta.
         /// </summary>
         internal static string ProductEmptyNameValidationMessage {
             get {
                 return ResourceManager.GetString("ProductEmptyNameValidationMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Cena jest pusta.
-        /// </summary>
-        internal static string ProductEmptyPriceValidationMessage {
-            get {
-                return ResourceManager.GetString("ProductEmptyPriceValidationMessage", resourceCulture);
             }
         }
         
@@ -106,47 +88,11 @@ namespace BusinessSolutionChatGpt.Resources {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Identyfikator produktu nie został podany.
-        /// </summary>
-        internal static string ProductMissingIdentifierValidationMessage {
-            get {
-                return ResourceManager.GetString("ProductMissingIdentifierValidationMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Nazwa została nie podana.
         /// </summary>
         internal static string ProductMissingNameValidationMessage {
             get {
                 return ResourceManager.GetString("ProductMissingNameValidationMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Cena nie została podana.
-        /// </summary>
-        internal static string ProductMissingPriceValidationMessage {
-            get {
-                return ResourceManager.GetString("ProductMissingPriceValidationMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Podaj nazwę produktu.
-        /// </summary>
-        internal static string ProductNameInstruction {
-            get {
-                return ResourceManager.GetString("ProductNameInstruction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Ciąg znaków to nie cena.
-        /// </summary>
-        internal static string ProductNotDecimalPriceValidationMessage {
-            get {
-                return ResourceManager.GetString("ProductNotDecimalPriceValidationMessage", resourceCulture);
             }
         }
         
@@ -160,29 +106,11 @@ namespace BusinessSolutionChatGpt.Resources {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Niepoprawny identyfikator produktu.
-        /// </summary>
-        internal static string ProductNotIntegerIdentifierValidationMessage {
-            get {
-                return ResourceManager.GetString("ProductNotIntegerIdentifierValidationMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Cena musi być większa od 0.
         /// </summary>
         internal static string ProductNotPositivePriceValidationMessage {
             get {
                 return ResourceManager.GetString("ProductNotPositivePriceValidationMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Podaj cenę produktu.
-        /// </summary>
-        internal static string ProductPriceInstruction {
-            get {
-                return ResourceManager.GetString("ProductPriceInstruction", resourceCulture);
             }
         }
         

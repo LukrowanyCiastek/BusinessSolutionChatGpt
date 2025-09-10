@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BusinessSolutionChatGpt.Core\BusinessSolutionChatGpt.Core.csproj" />
-    <ProjectReference Include="..\BusinessSolutionChatGpt\BusinessSolutionChatGpt.csproj" />
   </ItemGroup>
 
   <ItemGroup>

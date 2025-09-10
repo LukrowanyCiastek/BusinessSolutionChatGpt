@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace BusinessSolutionChatGpt.Resources {
+namespace BusinessSolutionChatGpt.Console.Resources {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace BusinessSolutionChatGpt.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BusinessSolutionChatGpt.Resources.SharedResource - kopiować", typeof(SharedResource___kopiować).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("BusinessSolutionChatGpt.Console.Resources.SharedResource", typeof(SharedResource___kopiować).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

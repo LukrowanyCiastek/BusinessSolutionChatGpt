@@ -1,22 +1,22 @@
-﻿using BusinessSolutionChatGpt.Core.DTO.Product;
+﻿using BusinessSolutionChatGpt.Console.Infrastructure.Interfaces;
+using BusinessSolutionChatGpt.Console.Interfaces;
+using BusinessSolutionChatGpt.Core.DTO.Product;
 using BusinessSolutionChatGpt.Core.Interfaces;
-using BusinessSolutionChatGpt.Infrastructure.Interfaces;
-using BusinessSolutionChatGpt.Interfaces;
+using BusinessSolutionChatGpt.Core.Validators;
 using log4net;
 using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
 using System.Globalization;
 
-namespace BusinessSolutionChatGpt
+namespace BusinessSolutionChatGpt.Console
 {
     internal class ShopApp : IShopApp
     {
         private readonly IOutput output;
         private readonly IInput input;
         private readonly IShopCartManager shopCartManager;
-        private readonly IInputRetriever<string> productNameRetriever;
-        private readonly IInputRetriever<decimal> productPriceRetriever;
-        private readonly IInputRetriever<long> productIdentifierRetriever;
+        private readonly AddProductValidator addProductValidator;
+        private readonly ProductExistValidator productExistValidator;
         private readonly IStringLocalizer localizer;
         private readonly ILog log;
         private readonly ShopCartPrinter shopCartPrinter;
@@ -24,18 +24,16 @@ namespace BusinessSolutionChatGpt
         public ShopApp(IOutput output,
             IInput input,
             IShopCartManager shopCartManager,
-            ProductNameLoopDataRetriever productNameRetriever,
-            ProductPriceLoopDataRetriever productPriceRetriever,
-            ProductIdLoopDataRetriever productIdentifierRetriever,
+            AddProductValidator addProductValidator,
+            ProductExistValidator productExistValidator,
             IStringLocalizer localizer,
             ILog log) 
         {
             this.output = output;
             this.input = input;
             this.shopCartManager = shopCartManager;
-            this.productNameRetriever = productNameRetriever;
-            this.productPriceRetriever = productPriceRetriever;
-            this.productIdentifierRetriever = productIdentifierRetriever;
+            this.addProductValidator = addProductValidator;
+            this.productExistValidator = productExistValidator;
             this.localizer = localizer;
             this.log = log;
             shopCartPrinter = new ShopCartPrinter(output, this.shopCartManager);
@@ -58,9 +56,7 @@ namespace BusinessSolutionChatGpt
                 switch (readedKey.Key)
                 {
                     case ConsoleKey.D1:
-                        string productName = productNameRetriever.TryGet()!;
-                        decimal productPrice = productPriceRetriever.TryGet();
-                        var product = new AddProductDTO { Name = productName, Price = productPrice };
+                        var product = LoopDataRetriever<AddProductDTO>.ReadObject(addProductValidator, output);
                         log.Debug($"Użytkownik stworzył produkt {JsonConvert.SerializeObject(product)}");
                         shopCartManager.Add(product);
                         break;
@@ -73,7 +69,7 @@ namespace BusinessSolutionChatGpt
                         output.WriteLineWithEscape($"Całkowity koszt to: {shopCartManager.GetTotalCost().ToString(CultureInfo.InvariantCulture)}");
                         break;
                     case ConsoleKey.D4:
-                        var productId = productIdentifierRetriever.TryGet();
+                        var productId = LoopDataRetriever<long>.ReadPrimitive(productExistValidator, output, localizer["ProductIdentifierInstruction"]);
                         log.Debug($"Użytkownik próbuje produkt {productId}");
                         shopCartManager.Delete(productId - 1);
                         output.WriteLine($"Usunięto produkt o identyfikatorze: {productId}");

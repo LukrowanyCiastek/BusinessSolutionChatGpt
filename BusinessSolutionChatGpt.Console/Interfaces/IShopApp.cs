@@ -1,4 +1,4 @@
-﻿namespace BusinessSolutionChatGpt.Interfaces
+﻿namespace BusinessSolutionChatGpt.Console.Interfaces
 {
     internal interface IShopApp
     {

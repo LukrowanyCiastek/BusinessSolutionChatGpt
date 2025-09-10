@@ -6,12 +6,13 @@ using BusinessSolutionChatGpt.Core.Services;
 using BusinessSolutionChatGpt.Core.Services.Interfaces;
 using BusinessSolutionChatGpt.Core.Validators;
 using BusinessSolutionChatGpt.Services;
-using BusinessSolutionChatGpt.Validators;
 using log4net;
 using log4net.Config;
 using log4net.Repository;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Extensions.Localization;
 using System.Reflection;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace BusinessSolutionChatGpt.Api
 {
@@ -45,12 +46,40 @@ namespace BusinessSolutionChatGpt.Api
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
-            }
+            } else
+            {
+                app.UseExceptionHandler(exceptionHandlerApp =>
+                {
+                    exceptionHandlerApp.Run(async context =>
+                    {
+                        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
 
+                        // using static System.Net.Mime.MediaTypeNames;
+                        context.Response.ContentType = Text.Plain;
+
+                        await context.Response.WriteAsync("An exception was thrown.");
+
+                        var exceptionHandlerPathFeature =
+                            context.Features.Get<IExceptionHandlerPathFeature>();
+
+                        if (exceptionHandlerPathFeature?.Error is FileNotFoundException)
+                        {
+                            await context.Response.WriteAsync(" The file was not found.");
+                        }
+
+                        if (exceptionHandlerPathFeature?.Path == "/")
+                        {
+                            await context.Response.WriteAsync(" Page: Home.");
+                        }
+                    });
+                });
+            }
+            
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
 
+            app.UseCors();
 
             app.MapControllers();
 
@@ -67,11 +96,12 @@ namespace BusinessSolutionChatGpt.Api
             });
             serviceCollection.AddLocalization(options => options.ResourcesPath = "Resources");
             serviceCollection.AddSingleton(x => x.GetRequiredService<IStringLocalizerFactory>().Create("SharedResource", typeof(Program).Assembly.GetName().Name!));
+            serviceCollection.AddCors();
             serviceCollection.AddSingleton<IList<Product>>(new List<Product>());
-            serviceCollection.AddSingleton<IProductRepository, ProductRepository>();
-            serviceCollection.AddSingleton<IAddProductService, AddProductService>();
-            serviceCollection.AddSingleton<IGetProductService, GetProductService>();
-            serviceCollection.AddSingleton<IDeleteProductService, DeleteProductService>();
+            serviceCollection.AddScoped<IProductRepository, ProductRepository>();
+            serviceCollection.AddScoped<IAddProductService, AddProductService>();
+            serviceCollection.AddScoped<IGetProductService, GetProductService>();
+            serviceCollection.AddScoped<IDeleteProductService, DeleteProductService>();
             serviceCollection.AddScoped<IShopCartManager, ShopCartManager>();
             serviceCollection.AddTransient<AddProductValidator>();
             serviceCollection.AddTransient<ProductExistValidator>();

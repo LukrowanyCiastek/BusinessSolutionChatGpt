@@ -2,7 +2,7 @@
 using FluentValidation;
 using Microsoft.Extensions.Localization;
 
-namespace BusinessSolutionChatGpt.Validators
+namespace BusinessSolutionChatGpt.Core.Validators
 {
     public class AddProductValidator : AbstractValidator<AddProductDTO>
     {

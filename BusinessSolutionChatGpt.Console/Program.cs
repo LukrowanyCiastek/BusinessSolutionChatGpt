@@ -1,13 +1,13 @@
-﻿using BusinessSolutionChatGpt.Core;
+﻿using BusinessSolutionChatGpt.Console.Infrastructure;
+using BusinessSolutionChatGpt.Console.Infrastructure.Interfaces;
+using BusinessSolutionChatGpt.Console.Interfaces;
+using BusinessSolutionChatGpt.Core;
 using BusinessSolutionChatGpt.Core.Interfaces;
 using BusinessSolutionChatGpt.Core.Model;
 using BusinessSolutionChatGpt.Core.Services;
 using BusinessSolutionChatGpt.Core.Services.Interfaces;
-using BusinessSolutionChatGpt.Infrastructure;
-using BusinessSolutionChatGpt.Infrastructure.Interfaces;
-using BusinessSolutionChatGpt.Interfaces;
+using BusinessSolutionChatGpt.Core.Validators;
 using BusinessSolutionChatGpt.Services;
-using BusinessSolutionChatGpt.Validators;
 using log4net;
 using log4net.Config;
 using log4net.Repository;
@@ -17,7 +17,7 @@ using Microsoft.Extensions.Logging;
 using System.Globalization;
 using System.Reflection;
 
-namespace BusinessSolutionChatGpt
+namespace BusinessSolutionChatGpt.Console
 {
     internal class Program
     {
@@ -70,12 +70,8 @@ namespace BusinessSolutionChatGpt
             serviceCollection.AddSingleton<IGetProductService, GetProductService>();
             serviceCollection.AddSingleton<IDeleteProductService, DeleteProductService>();
             serviceCollection.AddScoped<IShopCartManager, ShopCartManager>();
-            serviceCollection.AddTransient<ProductNameValidator>();
-            serviceCollection.AddTransient<ProductIdValidator>();
-            serviceCollection.AddSingleton<ProductNameLoopDataRetriever>();
-            serviceCollection.AddTransient<ProductPriceValidator>();
-            serviceCollection.AddSingleton<ProductPriceLoopDataRetriever>();
-            serviceCollection.AddSingleton<ProductIdLoopDataRetriever>();
+            serviceCollection.AddScoped<AddProductValidator>();
+            serviceCollection.AddScoped<ProductExistValidator>();
             serviceCollection.AddSingleton<IShopApp, ShopApp>();
         }
     }

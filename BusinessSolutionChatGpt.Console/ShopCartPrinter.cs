@@ -1,8 +1,8 @@
-﻿using BusinessSolutionChatGpt.Core.Interfaces;
-using BusinessSolutionChatGpt.Infrastructure.Interfaces;
+﻿using BusinessSolutionChatGpt.Console.Infrastructure.Interfaces;
+using BusinessSolutionChatGpt.Core.Interfaces;
 using System.Globalization;
 
-namespace BusinessSolutionChatGpt
+namespace BusinessSolutionChatGpt.Console
 {
     internal class ShopCartPrinter
     {

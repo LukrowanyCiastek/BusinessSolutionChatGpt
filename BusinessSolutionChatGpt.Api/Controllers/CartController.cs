@@ -1,8 +1,6 @@
 ﻿using BusinessSolutionChatGpt.Core.DTO.Product;
 using BusinessSolutionChatGpt.Core.Interfaces;
 using BusinessSolutionChatGpt.Core.Validators;
-using BusinessSolutionChatGpt.Validators;
-using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BusinessSolutionChatGpt.Api.Controllers
@@ -29,7 +27,7 @@ namespace BusinessSolutionChatGpt.Api.Controllers
             if (result.IsValid)
             {
                 shopCartManager.Add(addProduct);
-                return Created();
+                return Ok(shopCartManager.GetAll().Count);
             }
             else
             {

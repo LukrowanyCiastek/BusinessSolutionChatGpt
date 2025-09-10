@@ -6,11 +6,11 @@ namespace BusinessSolutionChatGpt.Core.Validators
 {
     public class ProductExistValidator : AbstractValidator<long>
     {
-        public ProductExistValidator(IShopCartManager shopCartManager, IStringLocalizer localizer) 
+        public ProductExistValidator(IStringLocalizer localizer, IShopCartManager shopCartManager) 
         {
             RuleFor(x => x)
-                .Must((x, value) => x > 0).WithMessage("Identyfiaktor musi być większy od 0")
-                .Must((x, value) => shopCartManager.Exists(x)).WithMessage(localizer["ProductNotExistValidationMessage"]);
+                .Must((x) =>  x > 0).WithMessage("Identyfiaktor musi być większy od 0")
+                .Must((x) => shopCartManager.Exists(x)).WithMessage(localizer["ProductNotExistValidationMessage"]);
         }
     }
 }

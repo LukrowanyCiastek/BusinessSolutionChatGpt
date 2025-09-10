@@ -120,11 +120,20 @@
   <data name="AddProductInstruction" xml:space="preserve">
     <value>Naciśnij 1 aby rozpocząć dodawanie produktu do koszyka</value>
   </data>
+  <data name="ProductEmptyNameValidationMessage" xml:space="preserve">
+    <value>Nazwa jest pusta</value>
+  </data>
+  <data name="ProductIdentifierInstruction" xml:space="preserve">
+    <value>Podaj identyfikator produktu</value>
+  </data>
   <data name="ProductMissingNameValidationMessage" xml:space="preserve">
     <value>Nazwa została nie podana</value>
   </data>
-  <data name="ProductEmptyNameValidationMessage" xml:space="preserve">
-    <value>Nazwa jest pusta</value>
+  <data name="ProductNotExistValidationMessage" xml:space="preserve">
+    <value>Produkt nie istnieje</value>
+  </data>
+  <data name="ProductNotPositivePriceValidationMessage" xml:space="preserve">
+    <value>Cena musi być większa od 0</value>
   </data>
   <data name="RemoveAllProductsInstruction" xml:space="preserve">
     <value>Naciśnij 5 aby usunąć wszystkie książki</value>
@@ -140,38 +149,5 @@
   </data>
   <data name="StopShopAppInstruction" xml:space="preserve">
     <value>Naciśnij Esc aby zakończyć pracę</value>
-  </data>
-  <data name="ProductNameInstruction" xml:space="preserve">
-    <value>Podaj nazwę produktu</value>
-  </data>
-  <data name="ProductMissingPriceValidationMessage" xml:space="preserve">
-    <value>Cena nie została podana</value>
-  </data>
-  <data name="ProductEmptyPriceValidationMessage" xml:space="preserve">
-    <value>Cena jest pusta</value>
-  </data>
-  <data name="ProductNotDecimalPriceValidationMessage" xml:space="preserve">
-    <value>Ciąg znaków to nie cena</value>
-  </data>
-  <data name="ProductNotPositivePriceValidationMessage" xml:space="preserve">
-    <value>Cena musi być większa od 0</value>
-  </data>
-  <data name="ProductPriceInstruction" xml:space="preserve">
-    <value>Podaj cenę produktu</value>
-  </data>
-  <data name="ProductMissingIdentifierValidationMessage" xml:space="preserve">
-    <value>Identyfikator produktu nie został podany</value>
-  </data>
-  <data name="ProductEmptyIdentifierValidationMessage" xml:space="preserve">
-    <value>Identyfikator produktu jest pusty</value>
-  </data>
-  <data name="ProductNotIntegerIdentifierValidationMessage" xml:space="preserve">
-    <value>Niepoprawny identyfikator produktu</value>
-  </data>
-  <data name="ProductNotExistValidationMessage" xml:space="preserve">
-    <value>Produkt nie istnieje</value>
-  </data>
-  <data name="ProductIdentifierInstruction" xml:space="preserve">
-    <value>Podaj identyfikator produktu</value>
   </data>
 </root>
