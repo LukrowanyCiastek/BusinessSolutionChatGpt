@@ -109,205 +109,78 @@ namespace BusinessSolutionChatGpt.Console
             var isNullable = underlying != null || !type.IsValueType;
             var t = underlying ?? type;
 
-            // STRING
-            if (t == typeof(string))
-            {
-                var prompt = new TextPrompt<string>(PromptTitle(label, current, isNullable));
-                if (isNullable)
-                {
-                    prompt.AllowEmpty();
-                }
-                return AnsiConsole.Prompt(prompt);
-            }
+            if (t == typeof(string)) return ReadString(label, current, isNullable);
+            if (t == typeof(bool)) return ReadBool(label, current, isNullable);
+            if (t.IsEnum) return ReadEnum(label, current, isNullable, t);
+            if (t == typeof(DateTime)) return LoopRead<DateTime>(label, current, isNullable, "[dim](format: yyyy-MM-dd)[/]", "[red]Nieprawidłowa data. Użyj yyyy-MM-dd[/]");
+            if (t == typeof(Guid)) return LoopRead<Guid>(label, current, isNullable, "[dim](np. 00000000-0000-0000-0000-000000000000)[/]", "[red]Nieprawidłowy Guid[/]");
+            if (t == typeof(int)) return LoopRead<int>(label, current, isNullable, "[dim](liczba całkowita)[/]", "[red]Nieprawidłowa liczba całkowita[/]");
+            if (t == typeof(long)) return LoopRead<long>(label, current, isNullable, "[dim](liczba całkowita)[/]", "[red]Nieprawidłowa liczba całkowita[/]");
+            if (t == typeof(float)) return LoopRead<float>(label, current, isNullable, "[dim](liczba, np. 123.45)[/]", "[red]Nieprawidłowa liczba[/]");
+            if (t == typeof(double)) return LoopRead<double>(label, current, isNullable, "[dim](liczba, np. 123.45)[/]", "[red]Nieprawidłowa liczba[/]");
+            if (t == typeof(decimal)) return LoopRead<decimal>(label, current, isNullable, "[dim](liczba, np. 123.45)[/]", "[red]Nieprawidłowa liczba[/]");
+            if (IsSimple(t)) return LoopRead<object>(label, current, isNullable, string.Empty, "[red]Nieprawidłowa wartość dla typu {t.Name}[/]");
 
-            // BOOL (Confirm dla nie-null, 3-pozycyjny wybór dla nullable)
-            if (t == typeof(bool))
-            {
-                if (isNullable)
-                {
-                    var choice = AnsiConsole.Prompt(
-                        new SelectionPrompt<string>()
-                            .Title(PromptTitle(label, current, isNullable))
-                            .AddChoices("(puste)", "tak", "nie"));
-                    return choice switch
-                    {
-                        "tak" => true,
-                        "nie" => (bool?)false,
-                        _ => null
-                    };
-                }
-                else
-                {
-                    bool defaultVal = current is bool b && b;
-                    // Confirm ma wbudowany domyślny wybór
-                    return AnsiConsole.Confirm(PromptTitle(label, current, isNullable), defaultVal);
-                }
-            }
-
-            // ENUM
-            if (t.IsEnum)
-            {
-                var names = Enum.GetNames(t).ToList();
-                var prompt = new SelectionPrompt<string>()
-                    .Title(PromptTitle(label, current, isNullable))
-                    .PageSize(10);
-
-                if (isNullable)
-                    prompt.AddChoices(new[] { "(puste)" }.Concat(names));
-                else
-                    prompt.AddChoices(names);
-
-                var selected = AnsiConsole.Prompt(prompt);
-                if (isNullable && selected == "(puste)") return null;
-
-                return Enum.Parse(t, selected, ignoreCase: true);
-            }
-
-            // DATETIME o ustalonym formacie
-            if (t == typeof(DateTime))
-            {
-                while (true)
-                {
-                    var prompt = new TextPrompt<string>(PromptTitle(label, current, isNullable) + " [dim](format: yyyy-MM-dd)[/]");
-                    if (isNullable)
-                    {
-                        prompt.AllowEmpty();
-                    }
-                    var text = AnsiConsole.Prompt(prompt);
-
-                    if (string.IsNullOrWhiteSpace(text))
-                        return isNullable ? null : default(DateTime);
-
-                    if (DateTime.TryParseExact(text, "yyyy-MM-dd", CultureInfo.InvariantCulture,
-                                               DateTimeStyles.None, out var dt))
-                        return dt;
-
-                    AnsiConsole.MarkupLine("[red]Nieprawidłowa data. Użyj yyyy-MM-dd[/]");
-                }
-            }
-
-            // GUID
-            if (t == typeof(Guid))
-            {
-                while (true)
-                {
-                    var prompt = new TextPrompt<string>(PromptTitle(label, current, isNullable) + " [dim](np. 00000000-0000-0000-0000-000000000000)[/]");
-                    if (isNullable)
-                    {
-                        prompt.AllowEmpty();
-                    }
-                    var text = AnsiConsole.Prompt(prompt);
-
-                    if (string.IsNullOrWhiteSpace(text))
-                        return isNullable ? null : Guid.Empty;
-
-                    if (Guid.TryParse(text, out var g))
-                        return g;
-
-                    AnsiConsole.MarkupLine("[red]Nieprawidłowy Guid[/]");
-                }
-            }
-
-            // LICZBY
-            if (t == typeof(int)) return ReadNumber<int>(label, current, isNullable, int.TryParse);
-            if (t == typeof(long)) return ReadNumber<long>(label, current, isNullable, long.TryParse);
-            if (t == typeof(float)) return ReadFloat<float>(label, current, isNullable, float.TryParse);
-            if (t == typeof(double)) return ReadFloat<double>(label, current, isNullable, double.TryParse);
-            if (t == typeof(decimal)) return ReadDecimal(label, current, isNullable);
-
-            // PROSTE TYPY – podejdź generycznie
-            if (IsSimple(t))
-            {
-                while (true)
-                {
-                    var prompt = new TextPrompt<string>(PromptTitle(label, current, isNullable));
-                    if (isNullable)
-                    {
-                        prompt.AllowEmpty();
-                    }
-                    var text = AnsiConsole.Prompt(prompt);
-
-                    if (string.IsNullOrWhiteSpace(text))
-                        return isNullable ? null : Activator.CreateInstance(t);
-
-                    try
-                    {
-                        var val = Convert.ChangeType(text, t, CultureInfo.InvariantCulture);
-                        return val;
-                    }
-                    catch
-                    {
-                        AnsiConsole.MarkupLine($"[red]Nieprawidłowa wartość dla typu {t.Name}[/]");
-                    }
-                }
-            }
-
-            // fallback
             return current;
         }
 
-        private static object? ReadNumber<T>(string label, object? current, bool isNullable,
-        TryParseNumber<T> tryParse) where T : struct
+        public static object? ReadEnum(string label, object? current, bool isNullable, Type type)
         {
-            while (true)
-            {
-                var prompt = new TextPrompt<string>(PromptTitle(label, current, isNullable) + " [dim](liczba całkowita)[/]");
-                if (isNullable)
-                {
-                    prompt.AllowEmpty();
-                }
-                var text = AnsiConsole.Prompt(prompt);
+            var names = Enum.GetNames(type).ToList();
+            var prompt = new SelectionPrompt<string>()
+                .Title(PromptTitle(label, current, isNullable))
+                .PageSize(10);
 
-                if (string.IsNullOrWhiteSpace(text))
-                    return isNullable ? null : default(T);
+            if (isNullable)
+                prompt.AddChoices(new[] { "(puste)" }.Concat(names));
+            else
+                prompt.AddChoices(names);
 
-                if (tryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out var val))
-                    return val;
-
-                AnsiConsole.MarkupLine("[red]Nieprawidłowa liczba całkowita[/]");
-            }
+            ConsoleParser.TryParse(AnsiConsole.Prompt(prompt), type, out var result);
+            return result;
         }
 
-        private static object? ReadFloat<T>(string label, object? current, bool isNullable,
-            TryParseFloat<T> tryParse) where T : struct
+        public static object? ReadBool(string label, object? current, bool isNullable)
         {
-            while (true)
-            {
-                var prompt = new TextPrompt<string>(PromptTitle(label, current, isNullable) + " [dim](liczba, np. 123.45)[/]");
-                if (isNullable)
-                {
-                    prompt.AllowEmpty();
-                }
-                var text = AnsiConsole.Prompt(prompt);
+            var choice = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title(PromptTitle(label, current, isNullable))
+                        .AddChoices("(puste)", "tak", "nie"));
 
-                if (string.IsNullOrWhiteSpace(text))
-                    return isNullable ? null : default(T);
+            ConsoleParser.TryParse(choice, typeof(bool), out var result);
 
-                if (tryParse(text, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out var val))
-                    return val;
-
-                AnsiConsole.MarkupLine("[red]Nieprawidłowa liczba[/]");
-            }
+            return result;
         }
 
-        private static object? ReadDecimal(string label, object? current, bool isNullable)
+        private static object? ReadString(string label, object? current, bool isNullable)
+        {
+            var prompt = new TextPrompt<string>(PromptTitle(label, current, isNullable));
+            if (isNullable)
+            {
+                prompt.AllowEmpty();
+            }
+
+            ConsoleParser.TryParse(AnsiConsole.Prompt(prompt), typeof(string), out var result);
+
+            return result;
+        }
+
+        private static object? LoopRead<TIn>(string label, object? current, bool isNullable, string title, string warning)
         {
             while (true)
             {
-                var prompt = new TextPrompt<string>(PromptTitle(label, current, isNullable) + " [dim](liczba, np. 123.45)[/]");
+                var prompt = new TextPrompt<string>(PromptTitle(label, current, isNullable) + " " + title);
                 if (isNullable)
                 {
                     prompt.AllowEmpty();
                 }
-                var text = AnsiConsole.Prompt(prompt);
 
-                if (string.IsNullOrWhiteSpace(text))
-                    return isNullable ? null : default(decimal);
+                if (ConsoleParser.TryParse(AnsiConsole.Prompt(prompt), typeof(TIn), out var result))
+                {
+                    return result;
+                }
 
-                if (decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out var val))
-                    return val;
-
-                AnsiConsole.MarkupLine("[red]Nieprawidłowa liczba[/]");
+                AnsiConsole.MarkupLine(warning);
             }
         }
 
@@ -344,7 +217,5 @@ namespace BusinessSolutionChatGpt.Console
                || t == typeof(DateTime)
                || t == typeof(Guid);
 
-        private delegate bool TryParseNumber<T>(string s, NumberStyles style, IFormatProvider provider, out T value);
-        private delegate bool TryParseFloat<T>(string s, NumberStyles style, IFormatProvider provider, out T value);
     }
 }

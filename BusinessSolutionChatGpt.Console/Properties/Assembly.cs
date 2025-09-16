@@ -1,3 +1,3 @@
 ﻿using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("BusinessSolutionChatGpt.Tests.Unit")]
+[assembly: InternalsVisibleTo("BusinessSolutionChatGpt.Console.Tests.Unit")]

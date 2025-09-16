@@ -18,7 +18,7 @@ namespace BusinessSolutionChatGpt.Core
 
         void IProductRepository.DeleteAll() => products.Clear();
 
-        bool IProductRepository.Exists(long id) => id >= 0 && id < products.Count;
+        bool IProductRepository.Exists(long id) => id >= 0 && id <= products.Count;
 
         List<Product> IProductRepository.GetAll() => products.ToList();
 
