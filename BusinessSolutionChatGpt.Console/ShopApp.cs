@@ -70,7 +70,7 @@ namespace BusinessSolutionChatGpt.Console
                         output.WriteLineWithEscape($"Całkowity koszt to: {shopCartManager.GetTotalCost().ToString(CultureInfo.InvariantCulture)}");
                         break;
                     case ConsoleKey.D4:
-                        var productId = input.ReadPrimitive(productExistValidator, output, localizer["ProductIdentifierInstruction"]);
+                        var productId = input.ReadPrimitive(productExistValidator, output, localizer.GetString("ProductIdentifierInstruction").Value);
                         log.Debug($"Użytkownik próbuje produkt {productId}");
                         shopCartManager.Delete(productId - 1);
                         output.WriteLine($"Usunięto produkt o identyfikatorze: {productId}");

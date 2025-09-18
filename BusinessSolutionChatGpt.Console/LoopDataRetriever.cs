@@ -19,16 +19,13 @@ namespace BusinessSolutionChatGpt.Console
 
         internal static object ReadPrimitive(Type type, IValidator<T>? validator, IOutput output, string instruction)
         {
-            output.WriteLine(string.Empty);
-            var obj = Activator.CreateInstance(type)!;
-
-            var props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                            .Where(p => p.CanWrite);
-
             if (!type.IsPrimitive)
             {
                 throw new InvalidOperationException("Type is not primitive");
             }
+
+            output.WriteLine(string.Empty);
+            var obj = Activator.CreateInstance(type)!;          
 
             bool isCorrect = false;
             do
