@@ -24,7 +24,8 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         private const string DefaultText = "Hello world";
         private const string DefaultEnDate = "1990-12-25";
         private const string DefaultPLDate = "25-12-1990";
-        private const string NotExistedEnumNumber = "2";
+        private const string DefaultNotExistedEnumNumber = "2";
+        private const string DefaultGuid = "00000000-0000-0000-0000-000000000001";
 
         [TestCase(DefaultShortPlYes, true)]
         [TestCase(DefaultPlYes, true)]
@@ -40,6 +41,7 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         [TestCase(DefaultNumberWithColon, null)]
         [TestCase(DefaultText, null)]
         [TestCase(DefaultEnDate, null)]
+        [TestCase(DefaultGuid, null)]
         public void TryParseBool_GivenCorrectInput_OutMatchedBoolValue(string input, bool? expected)
         {
             ConsoleParser.TryParseBool(input, out object? actual);
@@ -103,6 +105,7 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         [TestCase(DefaultNumberWithColon, null)]
         [TestCase(DefaultText, null)]
         [TestCase(DefaultEnDate, null)]
+        [TestCase(DefaultGuid, null)]
         public void TryParseInt_GiveInput_OutMachedValaue(string input, int? expected)
         {
             ConsoleParser.TryParseInt(input, out object? actual);
@@ -114,6 +117,7 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         [TestCase(DefaultNumberWithColon, false)]
         [TestCase(DefaultText, false)]
         [TestCase(DefaultEnDate, false)]
+        [TestCase(DefaultGuid, false)]
         public void TryParseInt_GiveInput_ReturnValaue(string input, bool expected)
         {
             var actual = ConsoleParser.TryParseInt(input, out object? result);
@@ -125,6 +129,7 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         [TestCase(DefaultNumberWithColon, null)]
         [TestCase(DefaultText, null)]
         [TestCase(DefaultEnDate, null)]
+        [TestCase(DefaultGuid, null)]
         public void TryParseLong_GiveInput_OutMachedValaue(string input, long? expected)
         {
             ConsoleParser.TryParseLong(input, out object? actual);
@@ -136,6 +141,7 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         [TestCase(DefaultNumberWithColon, false)]
         [TestCase(DefaultText, false)]
         [TestCase(DefaultEnDate, false)]
+        [TestCase(DefaultGuid, false)]
         public void TryParseLong_GiveInput_ReturnValaue(string input, bool expected)
         {
             var actual = ConsoleParser.TryParseLong(input, out object? result);
@@ -147,6 +153,7 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         [TestCase(DefaultNumberWithColon, 1.25)]
         [TestCase(DefaultText, null)]
         [TestCase(DefaultEnDate, null)]
+        [TestCase(DefaultGuid, null)]
         public void TryParseDecimal_GiveInput_OutMachedValaue(string input, decimal? expected)
         {
             ConsoleParser.TryParseDecimal(input, out object? actual);
@@ -158,6 +165,7 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         [TestCase(DefaultNumberWithColon, true)]
         [TestCase(DefaultText, false)]
         [TestCase(DefaultEnDate, false)]
+        [TestCase(DefaultGuid, false)]
         public void TryParseDecimal_GiveInput_ReturnValaue(string input, bool expected)
         {
             var actual = ConsoleParser.TryParseDecimal(input, out object? result);
@@ -169,6 +177,7 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         [TestCase(DefaultNumberWithColon, 1.25)]
         [TestCase(DefaultText, null)]
         [TestCase(DefaultEnDate, null)]
+        [TestCase(DefaultGuid, null)]
         public void TryParseDouble_GiveInput_OutMachedValaue(string input, double? expected)
         {
             ConsoleParser.TryParseDouble(input, out object? actual);
@@ -180,9 +189,67 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         [TestCase(DefaultNumberWithColon, true)]
         [TestCase(DefaultText, false)]
         [TestCase(DefaultEnDate, false)]
+        [TestCase(DefaultGuid, false)]
         public void TryParseDouble_GiveInput_ReturnValaue(string input, bool expected)
         {
             var actual = ConsoleParser.TryParseDouble(input, out object? result);
+
+            actual.Should().Be(expected);
+        }
+
+        [TestCase(DefaultOne, 1f)]
+        [TestCase(DefaultNumberWithColon, 1.25f)]
+        [TestCase(DefaultText, null)]
+        [TestCase(DefaultEnDate, null)]
+        [TestCase(DefaultGuid, null)]
+        public void TryParseFloat_GiveInput_OutMachedValaue(string input, float? expected)
+        {
+            ConsoleParser.TryParseFloat(input, out object? actual);
+
+            actual.Should().Be(expected);
+        }
+
+        [TestCase(DefaultOne, true)]
+        [TestCase(DefaultNumberWithColon, true)]
+        [TestCase(DefaultText, false)]
+        [TestCase(DefaultEnDate, false)]
+        [TestCase(DefaultGuid, false)]
+        public void TryParseFloat_GiveInput_ReturnValaue(string input, bool expected)
+        {
+            var actual = ConsoleParser.TryParseFloat(input, out object? result);
+
+            actual.Should().Be(expected);
+        }
+
+        [TestCase(DefaultOne, null)]
+        [TestCase(DefaultNumberWithColon, null)]
+        [TestCase(DefaultText, null)]
+        [TestCase(DefaultEnDate, null)]
+        public void TryParseGuid_GiveInput_OutMachedValaue(string input, string? expected)
+        {
+            ConsoleParser.TryParseGuid(input, out object? actual);
+
+            actual.Should().Be(expected);
+        }
+
+        [Test]
+        public void TryParseGuid_GiveInput_OutMachedValaue()
+        {
+            Guid.TryParse(DefaultGuid, out var result);
+
+            ConsoleParser.TryParseGuid(DefaultGuid, out object? actual);
+
+            actual.Should().Be(result);
+        }
+
+        [TestCase(DefaultOne, false)]
+        [TestCase(DefaultNumberWithColon, false)]
+        [TestCase(DefaultText, false)]
+        [TestCase(DefaultEnDate, false)]
+        [TestCase(DefaultGuid, true)]
+        public void TryParseGuid_GiveInput_ReturnValaue(string input, bool expected)
+        {
+            var actual = ConsoleParser.TryParseGuid(input, out object? result);
 
             actual.Should().Be(expected);
         }
@@ -210,6 +277,7 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         [TestCase(DefaultOne, null)]
         [TestCase(DefaultNumberWithColon, null)]
         [TestCase(DefaultText, null)]
+        [TestCase(DefaultGuid, null)]
         public void TryParseDateTime_GiveInput_OutMachedValaue(string input, DateTime? expected)
         {
             ConsoleParser.TryParseDateTime(input, out object? actual);
@@ -229,6 +297,7 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         [TestCase(DefaultOne, false)]
         [TestCase(DefaultNumberWithColon, false)]
         [TestCase(DefaultText, false)]
+        [TestCase(DefaultGuid, false)]
         public void TryParseDateTime_GiveInput_ReturnValaue(string input, bool expected)
         {
             var actual = ConsoleParser.TryParseDateTime(input, out object? result);
@@ -237,10 +306,11 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         }
 
         [TestCase(DefaultOne, TestEnum.None)]
-        [TestCase(NotExistedEnumNumber, (TestEnum)2)]
+        [TestCase(DefaultNotExistedEnumNumber, (TestEnum)2)]
         [TestCase(DefaultNumberWithColon, null)]
         [TestCase(DefaultText, null)]
         [TestCase(DefaultEnDate, null)]
+        [TestCase(DefaultGuid, null)]
         public void TryParseEnum_GiveInput_OutMachedValaue(string input, TestEnum? expected)
         {
             ConsoleParser.TryParseEnum(input, typeof(TestEnum), out object? actual);
@@ -249,10 +319,11 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         }
 
         [TestCase(DefaultOne, true)]
-        [TestCase(NotExistedEnumNumber, true)]
+        [TestCase(DefaultNotExistedEnumNumber, true)]
         [TestCase(DefaultNumberWithColon, false)]
         [TestCase(DefaultText, false)]
         [TestCase(DefaultEnDate, false)]
+        [TestCase(DefaultGuid, false)]
         public void TryParseEnum_GiveInput_ReturnValaue(string input, bool expected)
         {
             var actual = ConsoleParser.TryParseEnum(input, typeof(TestEnum), out object? result);
@@ -274,6 +345,7 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         [TestCase(DefaultNumberWithColon, null)]
         [TestCase(DefaultText, null)]
         [TestCase(DefaultEnDate, null)]
+        [TestCase(DefaultGuid, null)]
         [TestCase(" " + DefaultShortPlYes, true)]
         [TestCase(" " + DefaultPlYes, true)]
         [TestCase(" " + DefaultShortEnYes, true)]
@@ -288,6 +360,7 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         [TestCase(" " + DefaultNumberWithColon, null)]
         [TestCase(" " + DefaultText, null)]
         [TestCase(" " + DefaultEnDate, null)]
+        [TestCase(" " + DefaultGuid, null)]
         [TestCase(DefaultShortPlYes + " ", true)]
         [TestCase(DefaultPlYes + " ", true)]
         [TestCase(DefaultShortEnYes + " ", true)]
@@ -302,6 +375,7 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         [TestCase(DefaultNumberWithColon + " ", null)]
         [TestCase(DefaultText + " ", null)]
         [TestCase(DefaultEnDate + " ", null)]
+        [TestCase(DefaultGuid + " ", null)]
         public void TryParse_GivenCorrectInput_OutMatchedBoolValue(string input, bool? expected)
         {
             ConsoleParser.TryParse(input, typeof(bool), out object? actual);
@@ -311,12 +385,15 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         [TestCase(DefaultNumberWithColon)]
         [TestCase(DefaultText)]
         [TestCase(DefaultEnDate)]
+        [TestCase(DefaultGuid)]
         [TestCase(" " + DefaultNumberWithColon)]
         [TestCase(" " + DefaultText)]
         [TestCase(" " + DefaultEnDate)]
+        [TestCase(" " + DefaultGuid)]
         [TestCase(DefaultNumberWithColon + " ")]
         [TestCase(DefaultText + " ")]
         [TestCase(DefaultEnDate + " ")]
+        [TestCase(DefaultGuid + " ")]
         public void TryParse_GivenIncorrectInput_OutMatchedBoolValue(string input)
         {
             ConsoleParser.TryParse(input, typeof(bool), out object? actual);
@@ -393,15 +470,18 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         [TestCase(DefaultNumberWithColon, null)]
         [TestCase(DefaultText, null)]
         [TestCase(DefaultEnDate, null)]
+        [TestCase(DefaultGuid, null)]
         [TestCase(" " + DefaultOne, 1)]
         [TestCase(" " + DefaultNumberWithColon, null)]
         [TestCase(" " + DefaultText, null)]
         [TestCase(" " + DefaultEnDate, null)]
+        [TestCase(" " + DefaultGuid, null)]
         [TestCase(DefaultOne + " ", 1)]
         [TestCase(DefaultNumberWithColon + " ", null)]
         [TestCase(DefaultText + " ", null)]
         [TestCase(DefaultEnDate + " ", null)]
-        public void TryParse_GiveInput_OutMachedValaue(string input, int? expected)
+        [TestCase(DefaultGuid + " ", null)]
+        public void TryParseForInt_GiveInput_OutMachedValaue(string input, int? expected)
         {
             ConsoleParser.TryParse(input, typeof(int), out object? actual);
 
@@ -412,14 +492,17 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         [TestCase(DefaultNumberWithColon, false)]
         [TestCase(DefaultText, false)]
         [TestCase(DefaultEnDate, false)]
+        [TestCase(DefaultGuid, false)]
         [TestCase(" " + DefaultOne, true)]
         [TestCase(" " + DefaultNumberWithColon, false)]
         [TestCase(" " + DefaultText, false)]
         [TestCase(" " + DefaultEnDate, false)]
+        [TestCase(" " + DefaultGuid, null)]
         [TestCase(DefaultOne + " ", true)]
         [TestCase(DefaultNumberWithColon + " ", false)]
         [TestCase(DefaultText + " ", false)]
         [TestCase(DefaultEnDate + " ", false)]
+        [TestCase(DefaultGuid + " ", null)]
         public void TryParseForInt_GiveInput_ReturnValaue(string input, bool expected)
         {
             var actual = ConsoleParser.TryParse(input, typeof(int), out object? result);
@@ -431,15 +514,18 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         [TestCase(DefaultNumberWithColon, null)]
         [TestCase(DefaultText, null)]
         [TestCase(DefaultEnDate, null)]
+        [TestCase(DefaultGuid, null)]
         [TestCase(" " + DefaultOne, 1)]
         [TestCase(" " + DefaultNumberWithColon, null)]
         [TestCase(" " + DefaultText, null)]
         [TestCase(" " + DefaultEnDate, null)]
+        [TestCase(" " + DefaultGuid, null)]
         [TestCase(DefaultOne + " ", 1)]
         [TestCase(DefaultNumberWithColon + " ", null)]
         [TestCase(DefaultText + " ", null)]
         [TestCase(DefaultEnDate + " ", null)]
-        public void TryParse_GiveInput_OutMachedValaue(string input, long? expected)
+        [TestCase(DefaultGuid + " ", null)]
+        public void TryParseForLong_GiveInput_OutMachedValaue(string input, long? expected)
         {
             ConsoleParser.TryParse(input, typeof(long), out object? actual);
 
@@ -450,14 +536,17 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         [TestCase(DefaultNumberWithColon, false)]
         [TestCase(DefaultText, false)]
         [TestCase(DefaultEnDate, false)]
+        [TestCase(DefaultGuid, null)]
         [TestCase(" " + DefaultOne, true)]
         [TestCase(" " + DefaultNumberWithColon, false)]
         [TestCase(" " + DefaultText, false)]
         [TestCase(" " + DefaultEnDate, false)]
+        [TestCase(" " + DefaultGuid, false)]
         [TestCase(DefaultOne + " ", true)]
         [TestCase(DefaultNumberWithColon + " ", false)]
         [TestCase(DefaultText + " ", false)]
         [TestCase(DefaultEnDate + " ", false)]
+        [TestCase(DefaultGuid + " ", false)]
         public void TryParseForLong_GiveInput_ReturnValaue(string input, bool expected)
         {
             var actual = ConsoleParser.TryParse(input, typeof(long), out object? result);
@@ -469,16 +558,19 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         [TestCase(DefaultNumberWithColon, 1.25)]
         [TestCase(DefaultText, null)]
         [TestCase(DefaultEnDate, null)]
+        [TestCase(DefaultGuid, null)]
         [TestCase(" " + DefaultOne, 1)]
         [TestCase(" " + DefaultNumberWithColon, 1.25)]
         [TestCase(" " + DefaultText, null)]
         [TestCase(" " + DefaultEnDate, null)]
+        [TestCase(" " + DefaultGuid, null)]
         [TestCase(DefaultOne + " ", 1)]
         [TestCase(DefaultNumberWithColon + " ", 1.25)]
         [TestCase(DefaultText + " ", null)]
         [TestCase(DefaultEnDate + " ", null)]
+        [TestCase(DefaultGuid + " ", null)]
 
-        public void TryParse_GiveInput_OutMachedValaue(string input, decimal? expected)
+        public void TryParseForDecimal_GiveInput_OutMachedValaue(string input, decimal? expected)
         {
             ConsoleParser.TryParse(input, typeof(decimal), out object? actual);
 
@@ -489,14 +581,17 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         [TestCase(DefaultNumberWithColon, true)]
         [TestCase(DefaultText, false)]
         [TestCase(DefaultEnDate, false)]
+        [TestCase(DefaultGuid, false)]
         [TestCase(" " + DefaultOne, true)]
         [TestCase(" " + DefaultNumberWithColon, true)]
         [TestCase(" " + DefaultText, false)]
         [TestCase(" " + DefaultEnDate, false)]
+        [TestCase(" " + DefaultGuid, false)]
         [TestCase(DefaultOne + " ", true)]
         [TestCase(DefaultNumberWithColon + " ", true)]
         [TestCase(DefaultText + " ", false)]
         [TestCase(DefaultEnDate + " ", false)]
+        [TestCase(DefaultGuid + " ", false)]
         public void TryParseForDecimal_GiveInput_ReturnValaue(string input, bool expected)
         {
             var actual = ConsoleParser.TryParse(input, typeof(decimal), out object? result);
@@ -508,15 +603,18 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         [TestCase(DefaultNumberWithColon, 1.25)]
         [TestCase(DefaultText, null)]
         [TestCase(DefaultEnDate, null)]
+        [TestCase(DefaultGuid, null)]
         [TestCase(" " + DefaultOne, 1)]
         [TestCase(" " + DefaultNumberWithColon, 1.25)]
         [TestCase(" " + DefaultText, null)]
         [TestCase(" " + DefaultEnDate, null)]
+        [TestCase(" " + DefaultGuid, null)]
         [TestCase(DefaultOne + " ", 1)]
         [TestCase(DefaultNumberWithColon + " ", 1.25)]
         [TestCase(DefaultText + " ", null)]
         [TestCase(DefaultEnDate + " ", null)]
-        public void TryParse_GiveInput_OutMachedValaue(string input, double? expected)
+        [TestCase(DefaultGuid + " ", null)]
+        public void TryParseForDouble_GiveInput_OutMachedValaue(string input, double? expected)
         {
             ConsoleParser.TryParse(input, typeof(double), out object? actual);
 
@@ -527,14 +625,17 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         [TestCase(DefaultNumberWithColon, true)]
         [TestCase(DefaultText, false)]
         [TestCase(DefaultEnDate, false)]
+        [TestCase(DefaultGuid, false)]
         [TestCase(" " + DefaultOne, true)]
         [TestCase(" " + DefaultNumberWithColon, true)]
         [TestCase(" " + DefaultText, false)]
         [TestCase(" " + DefaultEnDate, false)]
+        [TestCase(" " + DefaultGuid, false)]
         [TestCase(DefaultOne + " ", true)]
         [TestCase(DefaultNumberWithColon + " ", true)]
         [TestCase(DefaultText + " ", false)]
         [TestCase(DefaultEnDate + " ", false)]
+        [TestCase(DefaultGuid + " ", false)]
         public void TryParseForDouble_GiveInput_ReturnValaue(string input, bool expected)
         {
             var actual = ConsoleParser.TryParse(input, typeof(double), out object? result);
@@ -542,8 +643,52 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
             actual.Should().Be(expected);
         }
 
+        [TestCase(DefaultOne, 1f)]
+        [TestCase(DefaultNumberWithColon, 1.25f)]
+        [TestCase(DefaultText, null)]
+        [TestCase(DefaultEnDate, null)]
+        [TestCase(DefaultGuid, null)]
+        [TestCase(" " + DefaultOne, 1f)]
+        [TestCase(" " + DefaultNumberWithColon, 1.25f)]
+        [TestCase(" " + DefaultText, null)]
+        [TestCase(" " + DefaultEnDate, null)]
+        [TestCase(" " + DefaultGuid, null)]
+        [TestCase(DefaultOne + " ", 1f)]
+        [TestCase(DefaultNumberWithColon + " ", 1.25f)]
+        [TestCase(DefaultText + " ", null)]
+        [TestCase(DefaultEnDate + " ", null)]
+        [TestCase(DefaultGuid + " ", null)]
+        public void TryParseForFloat_GiveInput_OutMachedValaue(string input, float? expected)
+        {
+            ConsoleParser.TryParse(input, typeof(float), out object? actual);
+
+            actual.Should().Be(expected);
+        }
+
+        [TestCase(DefaultOne, true)]
+        [TestCase(DefaultNumberWithColon, true)]
+        [TestCase(DefaultText, false)]
+        [TestCase(DefaultEnDate, false)]
+        [TestCase(DefaultGuid, false)]
+        [TestCase(" " + DefaultOne, true)]
+        [TestCase(" " + DefaultNumberWithColon, true)]
+        [TestCase(" " + DefaultText, false)]
+        [TestCase(" " + DefaultEnDate, false)]
+        [TestCase(" " + DefaultGuid, false)]
+        [TestCase(DefaultOne + " ", true)]
+        [TestCase(DefaultNumberWithColon + " ", true)]
+        [TestCase(DefaultText + " ", false)]
+        [TestCase(DefaultEnDate + " ", false)]
+        [TestCase(DefaultGuid + " ", false)]
+        public void TryParseForFloat_GiveInput_ReturnValaue(string input, bool expected)
+        {
+            var actual = ConsoleParser.TryParse(input, typeof(double), out object? result);
+
+            actual.Should().Be(expected);
+        }
+
         [Test]
-        public void TryParse_GiveInput_OutMachedValaue()
+        public void TryParseForDateTime_GiveInputInString_OutMachedValaue()
         {
             var input = DefaultEnDate;
             DateTime.TryParseExact(input, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var expected);
@@ -565,13 +710,16 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         [TestCase(DefaultOne, null)]
         [TestCase(DefaultNumberWithColon, null)]
         [TestCase(DefaultText, null)]
+        [TestCase(DefaultGuid, null)]
         [TestCase(" " + DefaultOne, null)]
         [TestCase(" " + DefaultNumberWithColon, null)]
         [TestCase(" " + DefaultText, null)]
+        [TestCase(" " + DefaultGuid, null)]
         [TestCase(DefaultOne + " ", null)]
         [TestCase(DefaultNumberWithColon + " ", null)]
         [TestCase(DefaultText + " ", null)]
-        public void TryParse_GiveInput_OutMachedValaue(string input, DateTime? expected)
+        [TestCase(DefaultGuid + " ", null)]
+        public void TryParseForDateTime_GiveInput_OutMachedValaue(string input, DateTime? expected)
         {
             ConsoleParser.TryParse(input, typeof(DateTime), out object? actual);
 
@@ -591,15 +739,40 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
             actual.Should().BeTrue();
         }
 
+        [Test]
+        public void TryParseForGuid_GiveInput_OutMachedValaue()
+        {
+            Guid.TryParse(DefaultGuid, out var result);
+
+            ConsoleParser.TryParse(DefaultGuid, typeof(Guid), out object? actual);
+
+            actual.Should().Be(result);
+        }
+
         [TestCase(DefaultOne, false)]
         [TestCase(DefaultNumberWithColon, false)]
         [TestCase(DefaultText, false)]
+        [TestCase(DefaultEnDate, false)]
+        [TestCase(DefaultGuid, true)]
+        public void TryParseForGuid_GiveInput_ReturnValaue(string input, bool expected)
+        {
+            var actual = ConsoleParser.TryParse(input, typeof(Guid), out object? result);
+
+            actual.Should().Be(expected);
+        }
+
+        [TestCase(DefaultOne, false)]
+        [TestCase(DefaultNumberWithColon, false)]
+        [TestCase(DefaultText, false)]
+        [TestCase(DefaultGuid, false)]
         [TestCase(" " + DefaultOne, false)]
         [TestCase(" " + DefaultNumberWithColon, false)]
         [TestCase(" " + DefaultText, false)]
+        [TestCase(" " + DefaultGuid, false)]
         [TestCase(DefaultOne + " ", false)]
         [TestCase(DefaultNumberWithColon + " ", false)]
         [TestCase(DefaultText + " ", false)]
+        [TestCase(DefaultGuid + " ", false)]
         public void TryParse_GiveInput_ReturnValaue(string input, bool expected)
         {
             var actual = ConsoleParser.TryParse(input, typeof(DateTime), out object? result);
@@ -608,21 +781,24 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         }
 
         [TestCase(DefaultOne, TestEnum.None)]
-        [TestCase(NotExistedEnumNumber, (TestEnum)2)]
+        [TestCase(DefaultNotExistedEnumNumber, (TestEnum)2)]
         [TestCase(DefaultNumberWithColon, null)]
         [TestCase(DefaultText, null)]
         [TestCase(DefaultEnDate, null)]
+        [TestCase(DefaultGuid, null)]
         [TestCase(" " + DefaultOne, TestEnum.None)]
-        [TestCase(" " + NotExistedEnumNumber, (TestEnum)2)]
+        [TestCase(" " + DefaultNotExistedEnumNumber, (TestEnum)2)]
         [TestCase(" " + DefaultNumberWithColon, null)]
         [TestCase(" " + DefaultText, null)]
         [TestCase(" " + DefaultEnDate, null)]
+        [TestCase(" " + DefaultGuid, null)]
         [TestCase(DefaultOne + " ", TestEnum.None)]
-        [TestCase(NotExistedEnumNumber + " ", (TestEnum)2)]
+        [TestCase(DefaultNotExistedEnumNumber + " ", (TestEnum)2)]
         [TestCase(DefaultNumberWithColon + " ", null)]
         [TestCase(DefaultText + " ", null)]
         [TestCase(DefaultEnDate + " ", null)]
-        public void TryParse_GiveInput_OutMachedValaue(string input, TestEnum? expected)
+        [TestCase(DefaultGuid + " ", null)]
+        public void TryParseForEnum_GiveInput_OutMachedValaue(string input, TestEnum? expected)
         {
             ConsoleParser.TryParse(input, typeof(TestEnum), out object? actual);
 
@@ -630,20 +806,23 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         }
 
         [TestCase(DefaultOne, true)]
-        [TestCase(NotExistedEnumNumber, true)]
+        [TestCase(DefaultNotExistedEnumNumber, true)]
         [TestCase(DefaultNumberWithColon, false)]
         [TestCase(DefaultText, false)]
         [TestCase(DefaultEnDate, false)]
+        [TestCase(DefaultGuid, false)]
         [TestCase(" " + DefaultOne, true)]
-        [TestCase(" " + NotExistedEnumNumber, true)]
+        [TestCase(" " + DefaultNotExistedEnumNumber, true)]
         [TestCase(" " + DefaultNumberWithColon, false)]
         [TestCase(" " + DefaultText, false)]
         [TestCase(" " + DefaultEnDate, false)]
+        [TestCase(" " + DefaultGuid, false)]
         [TestCase(DefaultOne + " ", true)]
-        [TestCase(NotExistedEnumNumber + " ", true)]
+        [TestCase(DefaultNotExistedEnumNumber + " ", true)]
         [TestCase(DefaultNumberWithColon + " ", false)]
         [TestCase(DefaultText + " ", false)]
         [TestCase(DefaultEnDate + " ", false)]
+        [TestCase(DefaultGuid + " ", false)]
         public void TryParseForEnum_GiveInput_ReturnValaue(string input, bool expected)
         {
             var actual = ConsoleParser.TryParse(input, typeof(TestEnum), out object? result);

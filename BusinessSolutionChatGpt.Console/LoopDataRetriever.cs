@@ -11,13 +11,13 @@ namespace BusinessSolutionChatGpt.Console
         where T : new()
     {
 
-        internal static T ReadObject(AbstractValidator<T>? validator, IOutput output)
+        internal static T ReadObject(IValidator<T>? validator, IOutput output)
         => (T)ReadObject(typeof(T), validator, output);
 
-        internal static T ReadPrimitive(AbstractValidator<T>? validator, IOutput output, string instruction)
+        internal static T ReadPrimitive(IValidator<T>? validator, IOutput output, string instruction)
         => (T)ReadPrimitive(typeof(T), validator, output, instruction);
 
-        internal static object ReadPrimitive(Type type, AbstractValidator<T>? validator, IOutput output, string instruction)
+        internal static object ReadPrimitive(Type type, IValidator<T>? validator, IOutput output, string instruction)
         {
             output.WriteLine(string.Empty);
             var obj = Activator.CreateInstance(type)!;
@@ -57,7 +57,7 @@ namespace BusinessSolutionChatGpt.Console
             return obj!;
         }
 
-        internal static object ReadObject(Type type, AbstractValidator<T>? validator, IOutput output)
+        internal static object ReadObject(Type type, IValidator<T>? validator, IOutput output)
         {
             output.WriteLine(string.Empty);
             var obj = Activator.CreateInstance(type)!;
