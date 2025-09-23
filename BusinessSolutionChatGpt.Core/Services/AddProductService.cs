@@ -14,8 +14,13 @@ namespace BusinessSolutionChatGpt.Core.Services
             this.repository = repository;
         }
 
-        void IAddProductService.Add(AddProductDTO product)
+        void IAddProductService.Add(AddProductDTO? product)
         {
+            if (product == null)
+            {
+                throw new ArgumentNullException(nameof(product), "Product can't be null");
+            }
+
             var model = new Product
             {
                 Name = product.Name,

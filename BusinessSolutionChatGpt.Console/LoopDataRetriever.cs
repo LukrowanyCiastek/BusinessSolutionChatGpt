@@ -1,33 +1,39 @@
 ﻿using BusinessSolutionChatGpt.Console.Infrastructure.Interfaces;
+using BusinessSolutionChatGpt.Console.Interfaces;
 using FluentValidation;
 using Spectre.Console;
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 using System.Reflection;
 
 namespace BusinessSolutionChatGpt.Console
 {
-    internal static class LoopDataRetriever<T>
+    internal class LoopDataRetriever<T> : ILoopDataRetriever<T>
         where T : new()
     {
+        private readonly IPromptFactory promptFactory;
 
-        internal static T ReadObject(IValidator<T>? validator, IOutput output)
-        => (T)ReadObject(typeof(T), validator, output);
-
-        internal static T ReadPrimitive(IValidator<T>? validator, IOutput output, string instruction)
-        => (T)ReadPrimitive(typeof(T), validator, output, instruction);
-
-        internal static object ReadPrimitive(Type type, IValidator<T>? validator, IOutput output, string instruction)
+        public LoopDataRetriever(IPromptFactory promptFactory)
         {
-            if (!type.IsPrimitive)
+            this.promptFactory = promptFactory;
+        }
+
+        T ILoopDataRetriever<T>.ReadObject(IValidator<T>? validator, IOutput output)
+            => (T)ReadObject(typeof(T), validator, output);
+
+        T ILoopDataRetriever<T>.ReadPrimitive(IValidator<T>? validator, IOutput output, string instruction)
+            => (T)ReadPrimitive(typeof(T), validator, output, instruction);
+
+        private object ReadPrimitive(Type type, IValidator<T>? validator, IOutput output, string instruction)
+        {
+            if (!type.IsPrimitive && !type.IsValueType)
             {
-                throw new InvalidOperationException("Type is not primitive");
+                throw new InvalidOperationException("Type is object primitive");
             }
 
             output.WriteLine(string.Empty);
-            var obj = Activator.CreateInstance(type)!;          
 
-            bool isCorrect = false;
+            bool isCorrect;
+            object? obj;
             do
             {
                 obj = ReadValue(instruction, type, null);
@@ -54,7 +60,7 @@ namespace BusinessSolutionChatGpt.Console
             return obj!;
         }
 
-        internal static object ReadObject(Type type, IValidator<T>? validator, IOutput output)
+        private object ReadObject(Type type, IValidator<T>? validator, IOutput output)
         {
             output.WriteLine(string.Empty);
             var obj = Activator.CreateInstance(type)!;
@@ -100,119 +106,66 @@ namespace BusinessSolutionChatGpt.Console
             return obj;
         }
 
-        private static object? ReadValue(string label, Type type, object? current)
+        private object? ReadValue(string label, Type type, object? current)
         {
             var underlying = Nullable.GetUnderlyingType(type);
             var isNullable = underlying != null || !type.IsValueType;
             var t = underlying ?? type;
 
-            if (t == typeof(string)) return ReadString(label, current, isNullable);
-            if (t == typeof(bool)) return ReadBool(label, current, isNullable);
-            if (t.IsEnum) return ReadEnum(label, current, isNullable, t);
-            if (t == typeof(DateTime)) return LoopRead<DateTime>(label, current, isNullable, "[dim](format: yyyy-MM-dd)[/]", "[red]Nieprawidłowa data. Użyj yyyy-MM-dd[/]");
-            if (t == typeof(Guid)) return LoopRead<Guid>(label, current, isNullable, "[dim](np. 00000000-0000-0000-0000-000000000000)[/]", "[red]Nieprawidłowy Guid[/]");
-            if (t == typeof(int)) return LoopRead<int>(label, current, isNullable, "[dim](liczba całkowita)[/]", "[red]Nieprawidłowa liczba całkowita[/]");
-            if (t == typeof(long)) return LoopRead<long>(label, current, isNullable, "[dim](liczba całkowita)[/]", "[red]Nieprawidłowa liczba całkowita[/]");
-            if (t == typeof(float)) return LoopRead<float>(label, current, isNullable, "[dim](liczba, np. 123.45)[/]", "[red]Nieprawidłowa liczba[/]");
-            if (t == typeof(double)) return LoopRead<double>(label, current, isNullable, "[dim](liczba, np. 123.45)[/]", "[red]Nieprawidłowa liczba[/]");
-            if (t == typeof(decimal)) return LoopRead<decimal>(label, current, isNullable, "[dim](liczba, np. 123.45)[/]", "[red]Nieprawidłowa liczba[/]");
-            if (IsSimple(t)) return LoopRead<object>(label, current, isNullable, string.Empty, "[red]Nieprawidłowa wartość dla typu {t.Name}[/]");
+            if (t == typeof(string)) return ReadString(label, current, isNullable, promptFactory);
+            if (t == typeof(bool)) return ReadBool(label, current, isNullable, promptFactory);
+            if (t.IsEnum) return ReadEnum(label, current, isNullable, t, promptFactory);
+            if (t == typeof(DateTime)) return LoopRead<DateTime>(label, current, isNullable, "[dim](format: yyyy-MM-dd)[/]", "[red]Nieprawidłowa data. Użyj yyyy-MM-dd[/]", promptFactory);
+            if (t == typeof(Guid)) return LoopRead<Guid>(label, current, isNullable, "[dim](np. 00000000-0000-0000-0000-000000000000)[/]", "[red]Nieprawidłowy Guid[/]", promptFactory);
+            if (t == typeof(int)) return LoopRead<int>(label, current, isNullable, "[dim](liczba całkowita)[/]", "[red]Nieprawidłowa liczba całkowita[/]", promptFactory);
+            if (t == typeof(long)) return LoopRead<long>(label, current, isNullable, "[dim](liczba całkowita)[/]", "[red]Nieprawidłowa liczba całkowita[/]", promptFactory);
+            if (t == typeof(float)) return LoopRead<float>(label, current, isNullable, "[dim](liczba, np. 123.45)[/]", "[red]Nieprawidłowa liczba[/]", promptFactory);
+            if (t == typeof(double)) return LoopRead<double>(label, current, isNullable, "[dim](liczba, np. 123.45)[/]", "[red]Nieprawidłowa liczba[/]", promptFactory);
+            if (t == typeof(decimal)) return LoopRead<decimal>(label, current, isNullable, "[dim](liczba, np. 123.45)[/]", "[red]Nieprawidłowa liczba[/]", promptFactory);
 
-            return current;
+            throw new NotImplementedException("Not defined type for read");
         }
 
-        public static object? ReadEnum(string label, object? current, bool isNullable, Type type)
+        public static object? ReadEnum(string label, object? current, bool isNullable, Type type, IPromptFactory promptFactory)
         {
-            var names = Enum.GetNames(type).ToList();
-            var prompt = new SelectionPrompt<string>()
-                .Title(PromptTitle(label, current, isNullable))
-                .PageSize(10);
-
-            if (isNullable)
-                prompt.AddChoices(new[] { "(puste)" }.Concat(names));
-            else
-                prompt.AddChoices(names);
+            var names = isNullable ? [] : Enum.GetNames(type);
+            var prompt = promptFactory.CreateSelectionPrompt(label, current, isNullable, 10, names);
 
             ConsoleParser.TryParse(AnsiConsole.Prompt(prompt), type, out var result);
             return result;
         }
 
-        public static object? ReadBool(string label, object? current, bool isNullable)
+        public static object? ReadBool(string label, object? current, bool isNullable, IPromptFactory promptFactory)
         {
-            var choice = AnsiConsole.Prompt(
-                    new SelectionPrompt<string>()
-                        .Title(PromptTitle(label, current, isNullable))
-                        .AddChoices("(puste)", "tak", "nie"));
+            var prompt = promptFactory.CreateSelectionPrompt(label, current, isNullable, pageSize: null, "(puste)", "tak", "nie");
+            var choice = AnsiConsole.Prompt(prompt);
 
             ConsoleParser.TryParse(choice, typeof(bool), out var result);
 
             return result;
         }
 
-        private static object? ReadString(string label, object? current, bool isNullable)
+        private static object? ReadString(string label, object? current, bool isNullable, IPromptFactory promptFactory)
         {
-            var prompt = new TextPrompt<string>(PromptTitle(label, current, isNullable));
-            if (isNullable)
-            {
-                prompt.AllowEmpty();
-            }
-
-            ConsoleParser.TryParse(AnsiConsole.Prompt(prompt), typeof(string), out var result);
+            ConsoleParser.TryParse(AnsiConsole.Prompt(promptFactory.CreateSelectionPrompt(label, current, isNullable)), typeof(string), out var result);
 
             return result;
         }
 
-        private static object? LoopRead<TIn>(string label, object? current, bool isNullable, string title, string warning)
+        private static object? LoopRead<TIn>(string label, object? current, bool isNullable, string title, string warning, IPromptFactory promptFactory)
         {
-            while (true)
+            var prompt = promptFactory.CreateTextPrompt(label + " " + title, current, isNullable);
+
+            if (!ConsoleParser.TryParse(AnsiConsole.Prompt(prompt), typeof(TIn), out var result))
             {
-                var prompt = new TextPrompt<string>(PromptTitle(label, current, isNullable) + " " + title);
-                if (isNullable)
-                {
-                    prompt.AllowEmpty();
-                }
-
-                if (ConsoleParser.TryParse(AnsiConsole.Prompt(prompt), typeof(TIn), out var result))
-                {
-                    return result;
-                }
-
                 AnsiConsole.MarkupLine(warning);
             }
-        }
 
-        private static string PromptTitle(string label, object? current, bool isNullable)
-        {
-            var defaultText = FormatDefaultLabel(current, isNullable);
-            return $"[bold]{label}[/]{defaultText}";
+            return result;
         }
-
-        private static string FormatDefaultLabel(object? current, bool isNullable)
-        {
-            if (isNullable) return " [dim](Enter = puste)[/]";
-            if (current is null) return "";
-            return $" [dim](domyślnie: {FormatValue(current)})[/]";
-        }
-
-        private static string FormatValue(object value)
-            => value switch
-            {
-                DateTime dt => dt.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
-                bool b => b ? "tak" : "nie",
-                IFormattable f => f.ToString(null, CultureInfo.InvariantCulture) ?? value.ToString() ?? "",
-                _ => value.ToString() ?? ""
-            };
 
         private static string? GetDisplayName(PropertyInfo p)
             => p.GetCustomAttribute<DisplayAttribute>()?.Name;
-
-        private static bool IsSimple(Type t)
-            => t.IsPrimitive
-               || t.IsEnum
-               || t == typeof(string)
-               || t == typeof(decimal)
-               || t == typeof(DateTime)
-               || t == typeof(Guid);
 
     }
 }

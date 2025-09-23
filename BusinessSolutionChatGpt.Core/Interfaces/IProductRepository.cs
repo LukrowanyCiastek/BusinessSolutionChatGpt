@@ -4,11 +4,11 @@ namespace BusinessSolutionChatGpt.Core.Interfaces
 {
     public interface IProductRepository
     {
-        void Add(Product product);
+        void Add(Product? product);
 
         List<Product> GetAll();
 
-        decimal GetAllPrice();
+        decimal GetTotalPrice();
 
         void DeleteAll();
 

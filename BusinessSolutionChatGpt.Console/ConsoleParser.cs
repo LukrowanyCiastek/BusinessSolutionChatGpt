@@ -89,6 +89,12 @@ namespace BusinessSolutionChatGpt.Console
 
         internal static bool TryParseDateTime(string input, out object? value)
         {
+            if (string.IsNullOrEmpty(input))
+            {
+                value = null;
+                return true;
+            }
+
             if (DateTime.TryParseExact(input, "yyyy-MM-dd", CultureInfo.InvariantCulture,
                                            DateTimeStyles.None, out var dt))
             {
@@ -106,6 +112,12 @@ namespace BusinessSolutionChatGpt.Console
 
         internal static bool TryParseGuid(string input, out object? value)
         {
+            if (string.IsNullOrEmpty(input))
+            {
+                value = null;
+                return true;
+            }
+
             if (Guid.TryParse(input, CultureInfo.CurrentCulture, out var dt))
             {
                 value = dt;
@@ -117,6 +129,12 @@ namespace BusinessSolutionChatGpt.Console
 
         internal static bool TryParseEnum(string input, Type targetType, out object? value)
         {
+            if (string.IsNullOrEmpty(input))
+            {
+                value = null;
+                return true;
+            }
+
             if (int.TryParse(input, out var enumInt) && Enum.IsDefined(targetType, enumInt))
             {
                 value = Enum.ToObject(targetType, enumInt);
@@ -124,6 +142,7 @@ namespace BusinessSolutionChatGpt.Console
             }
             try
             {
+
                 value = Enum.Parse(targetType, input, ignoreCase: true);
                 return true;
             }
@@ -134,7 +153,7 @@ namespace BusinessSolutionChatGpt.Console
             }
         }
 
-        public static bool TryParse(string input, Type targetType, out object? value)
+        internal static bool TryParse(string input, Type targetType, out object? value)
         {
             input = input.Trim();
 

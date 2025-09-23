@@ -12,16 +12,38 @@ namespace BusinessSolutionChatGpt.Core
             this.products = products;
         }
 
-        void IProductRepository.Add(Product product) => products.Add(product);
+        void IProductRepository.Add(Product? product)
+        {
+            if(product == null)
+            {
+                throw new ArgumentNullException(nameof(product), "Product can't be null");
+            }
 
-        void IProductRepository.Delete(long id) => products.RemoveAt((int)id);
+            products.Add(product);
+        }
 
-        void IProductRepository.DeleteAll() => products.Clear();
+        void IProductRepository.Delete(long id)
+        {
+            if (((IProductRepository)this).Exists(id))
+            {
+                products.RemoveAt((int)id);
+            }
+        }
+
+        void IProductRepository.DeleteAll()
+        {
+            if(products.Count == 0)
+            {
+                return;
+            }
+
+            products.Clear();
+        }
 
         bool IProductRepository.Exists(long id) => id >= 0 && id <= products.Count;
 
-        List<Product> IProductRepository.GetAll() => products.ToList();
+        List<Product> IProductRepository.GetAll() => [.. products];
 
-        decimal IProductRepository.GetAllPrice() => products.Sum(x => x.Price);
+        decimal IProductRepository.GetTotalPrice() => products.Sum(x => x.Price);
     }
 }
