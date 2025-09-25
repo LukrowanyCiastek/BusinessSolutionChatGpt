@@ -3,7 +3,6 @@ using BusinessSolutionChatGpt.Console.Infrastructure.Interfaces;
 using BusinessSolutionChatGpt.Core.DTO.Product;
 using BusinessSolutionChatGpt.Core.Interfaces;
 using BusinessSolutionChatGpt.Tests.Core;
-using Microsoft.VisualStudio.TestPlatform.Utilities;
 using NSubstitute;
 using System.Globalization;
 
@@ -15,7 +14,7 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         [Test]
         public void Print_CartIsEmpty_PrintShopCartIsEmpty()
         {
-            var mockOutput = Fixture.FreezeMock<Infrastructure.Interfaces.IOutput>();
+            var mockOutput = Fixture.FreezeMock<IOutput>();
             var mockShopCartManager = Fixture.FreezeMock<IShopCartManager>();
             mockShopCartManager.GetAll().Returns(new List<ProductDetailsDTO>());
             var printer = Fixture.Create<ShopCartPrinter>();
@@ -29,7 +28,7 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         [Test]
         public void Print_CartIsNotEmpty_PrintShopCartIsEmpty()
         {
-            var mockOutput = Fixture.FreezeMock<Infrastructure.Interfaces.IOutput>();
+            var mockOutput = Fixture.FreezeMock<IOutput>();
             var mockShopCartManager = Fixture.FreezeMock<IShopCartManager>();
             var products = Fixture.CreateMany<ProductDetailsDTO>().ToList();
             mockShopCartManager.GetAll().Returns(products);

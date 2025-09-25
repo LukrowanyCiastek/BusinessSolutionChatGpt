@@ -17,6 +17,6 @@ namespace BusinessSolutionChatGpt.Core.Services
 
         List<ProductDetailsDTO> IGetProductService.GetAll() => [.. repository.GetAll().Select(x => new ProductDetailsDTO { Name = x.Name!, Price = x.Price })];
 
-        decimal IGetProductService.GetPriceAll() => repository.GetTotalPrice();
+        decimal IGetProductService.GetTotalCost() => repository.GetTotalPrice();
     }
 }

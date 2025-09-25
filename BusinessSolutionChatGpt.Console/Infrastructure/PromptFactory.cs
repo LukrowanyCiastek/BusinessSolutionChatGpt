@@ -32,6 +32,11 @@ namespace BusinessSolutionChatGpt.Console.Infrastructure
             SelectionPrompt<string>? prompt = ((IPromptFactory)this).CreateSelectionPrompt(label, current, isNullable) as SelectionPrompt<string>;
 
             if (isNullable) {
+                if(choices == null)
+                {
+                    throw new ArgumentNullException(nameof(choices));
+                }
+
                 var extendedChoices = choices.ToList();
                 extendedChoices.Add(NullText);
                 prompt?.AddChoices(choices: [.. extendedChoices]);

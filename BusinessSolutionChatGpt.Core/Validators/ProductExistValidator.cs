@@ -9,8 +9,8 @@ namespace BusinessSolutionChatGpt.Core.Validators
         public ProductExistValidator(IStringLocalizer localizer, IShopCartManager shopCartManager) 
         {
             RuleFor(x => x)
-                .Must((x) =>  x > 0).WithMessage("Identyfiaktor musi być większy od 0")
-                .Must((x) => shopCartManager.Exists(x)).WithMessage(localizer["ProductNotExistValidationMessage"]);
+                .Must((x) => x > 0).WithMessage("Identyfiaktor musi być większy od 0")
+                .Must(shopCartManager.Exists).WithMessage(localizer.GetString("ProductNotExistValidationMessage").Value);
         }
     }
 }

@@ -23,7 +23,6 @@ namespace BusinessSolutionChatGpt.Console.Infrastructure
             {
                 DateTime dt => dt.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
                 bool b => b ? "tak" : "nie",
-                IFormattable f => f.ToString(null, CultureInfo.InvariantCulture) ?? value.ToString() ?? "",
                 _ => value.ToString() ?? ""
             };
     }
