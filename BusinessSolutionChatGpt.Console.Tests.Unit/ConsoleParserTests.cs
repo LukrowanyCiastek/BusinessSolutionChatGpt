@@ -773,7 +773,7 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         [TestCase(DefaultNumberWithColon + " ", false)]
         [TestCase(DefaultText + " ", false)]
         [TestCase(DefaultGuid + " ", false)]
-        public void TryParse_GiveInput_ReturnValaue(string input, bool expected)
+        public void TryParseDateTime_GiveInput_ReturnValaue(string input, bool expected)
         {
             var actual = ConsoleParser.TryParse(input, typeof(DateTime), out object? result);
 
