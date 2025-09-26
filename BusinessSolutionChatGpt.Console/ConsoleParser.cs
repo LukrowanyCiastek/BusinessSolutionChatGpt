@@ -101,7 +101,7 @@ namespace BusinessSolutionChatGpt.Console
                 value = dt;
                 return true;
             }
-            if (DateTime.TryParse(input, CultureInfo.CurrentCulture, DateTimeStyles.AssumeLocal, out dt))
+            if (DateTime.TryParse(input, CultureInfo.InvariantCulture, out dt))
             {
                 value = dt;
                 return true;
@@ -118,7 +118,7 @@ namespace BusinessSolutionChatGpt.Console
                 return true;
             }
 
-            if (Guid.TryParse(input, CultureInfo.CurrentCulture, out var dt))
+            if (Guid.TryParse(input, CultureInfo.InvariantCulture, out var dt))
             {
                 value = dt;
                 return true;
