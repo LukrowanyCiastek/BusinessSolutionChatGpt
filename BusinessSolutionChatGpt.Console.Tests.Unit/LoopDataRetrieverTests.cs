@@ -8,6 +8,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using NSubstitute;
 using Spectre.Console;
+using System.Globalization;
 
 namespace BusinessSolutionChatGpt.Console.Tests.Unit
 {
@@ -161,12 +162,12 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
             mockOutput.WriteLineWithEscape(errorMessage);
         }
 
-        [TestCase("25-01-1990", false)]
-        [TestCase("25-01-1990", true)]
+        [TestCase("1990-01-25", false)]
+        [TestCase("1990-01-25", true)]
         [TestCase("", true)]
         public void ReadPrimitiveDateTime_MissingValidator_ReturnsReadedValue(string readedText, bool allowedNull)
         {
-            DateTime? expected = string.IsNullOrEmpty(readedText) ? null : DateTime.Parse(readedText);
+            DateTime? expected = string.IsNullOrEmpty(readedText) ? null : DateTime.Parse(readedText, CultureInfo.InvariantCulture);
             var mockOutput = Fixture.FreezeMock<IOutput>();
             var mockPrompt = Fixture.FreezeMock<IPrompt<string>>();
             var mockPromptFactory = Fixture.FreezeMock<IPromptFactory>();
@@ -179,12 +180,12 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
             actual.Should().Be(expected);
         }
 
-        [TestCase("25-01-1990", false)]
-        [TestCase("25-01-1990", true)]
+        [TestCase("1990-01-25", false)]
+        [TestCase("1990-01-25", true)]
         [TestCase("", true)]
         public void ReadPrimitiveDateTime_GiveValidatorPassData_ReturnsReadedValue(string readedText, bool allowedNull)
         {
-            DateTime? expected = string.IsNullOrEmpty(readedText) ? null : DateTime.Parse(readedText);
+            DateTime? expected = string.IsNullOrEmpty(readedText) ? null : DateTime.Parse(readedText, CultureInfo.InvariantCulture);
             var mockOutput = Fixture.FreezeMock<IOutput>();
             var mockValidator = Fixture.FreezeMock<IValidator<DateTime?>>();
             var succesValidation = new FluentValidation.Results.ValidationResult();
@@ -201,12 +202,12 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
             actual.Should().Be(expected);
         }
 
-        [TestCase("25-01-1990", false)]
-        [TestCase("25-01-1990", true)]
+        [TestCase("1990-01-25", false)]
+        [TestCase("1990-01-25", true)]
         [TestCase("", true)]
         public void ReadPrimitiveDateTime_GiveValidatorNotPassData_ChecksPrintErrors(string readedText, bool allowedNull)
         {
-            DateTime? expected = string.IsNullOrEmpty(readedText) ? null : DateTime.Parse(readedText);
+            DateTime? expected = string.IsNullOrEmpty(readedText) ? null : DateTime.Parse(readedText, CultureInfo.InvariantCulture);
             var mockOutput = Fixture.FreezeMock<IOutput>();
             var mockValidator = Fixture.FreezeMock<IValidator<DateTime?>>();
             var propertyNameError = Fixture.FreezeMock<string>();
