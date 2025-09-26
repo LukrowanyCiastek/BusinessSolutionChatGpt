@@ -23,7 +23,7 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         private const string DefaultNumberWithColon = "1.25";
         private const string DefaultText = "Hello world";
         private const string DefaultEnDate = "1990-12-25";
-        private const string DefaultPLDate = "25-12-1990";
+        private const string DefaultPLDate = "1990-12-25";
         private const string DefaultNotExistedEnumNumber = "2";
         private const string DefaultGuid = "00000000-0000-0000-0000-000000000001";
 
@@ -268,7 +268,7 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         public void TryParseDateTime_GiveInput_OutMachedValaue()
         {
             var input = DefaultPLDate;
-            DateTime.TryParse(input, CultureInfo.CurrentCulture, DateTimeStyles.AssumeLocal, out var expected);
+            DateTime.TryParse(input, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var expected);
             ConsoleParser.TryParseDateTime(input, out object? actual);
 
             actual.Should().Be(expected);
@@ -701,7 +701,7 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         public void TryParseForDateTime_GiveInput_OutMachedValaue()
         {
             var input = DefaultPLDate;
-            DateTime.TryParse(input, CultureInfo.CurrentCulture, DateTimeStyles.AssumeLocal, out var expected);
+            DateTime.TryParse(input, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var expected);
             ConsoleParser.TryParse(input, typeof(DateTime), out object? actual);
 
             actual.Should().Be(expected);
