@@ -287,22 +287,22 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
 
         [TestCase(DefaultEnDate)]
         [TestCase(DefaultPLDate)]
-        public void TryParseDateTime_GiveInput_ReturnValaue(string input)
+        public void TryParseDateTime_GiveInput_ReturnTrue(string input)
         {
             var actual = ConsoleParser.TryParseDateTime(input, out object? result);
 
             actual.Should().BeTrue();
         }
 
-        [TestCase(DefaultOne, false)]
-        [TestCase(DefaultNumberWithColon, false)]
-        [TestCase(DefaultText, false)]
-        [TestCase(DefaultGuid, false)]
-        public void TryParseDateTime_GiveInput_ReturnValaue(string input, bool expected)
+        [TestCase(DefaultOne)]
+        [TestCase(DefaultNumberWithColon)]
+        [TestCase(DefaultText)]
+        [TestCase(DefaultGuid)]
+        public void TryParseDateTime_GiveInput_ReturnValaue(string input)
         {
             var actual = ConsoleParser.TryParseDateTime(input, out object? result);
 
-            actual.Should().Be(expected);
+            actual.Should().BeFalse();
         }
 
         [TestCase(DefaultOne, TestEnum.None)]
