@@ -98,11 +98,13 @@ namespace BusinessSolutionChatGpt.Console
             if (DateTime.TryParseExact(input, "yyyy-MM-dd", CultureInfo.InvariantCulture,
                                            DateTimeStyles.None, out var dt))
             {
+                System.Console.WriteLine("exact");
                 value = dt;
                 return true;
             }
             if (DateTime.TryParse(input, CultureInfo.InvariantCulture, out dt))
             {
+                System.Console.WriteLine("parse");
                 value = dt;
                 return true;
             }

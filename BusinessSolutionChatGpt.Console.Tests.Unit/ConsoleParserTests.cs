@@ -20,7 +20,7 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         private const string DefaultEnNo = "no";
         private const string DefaultBoolFalse = "false";
         private const string DefaultZero = "0";
-        private const string DefaultNumberWithColon = "1.25";
+        private const string DefaultNumberWithColon = "1.25242424";
         private const string DefaultText = "Hello world";
         private const string DefaultEnDate = "1990-12-25";
         private const string DefaultPLDate = "1990-12-25";
@@ -150,7 +150,7 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         }
 
         [TestCase(DefaultOne, 1)]
-        [TestCase(DefaultNumberWithColon, 1.25)]
+        [TestCase(DefaultNumberWithColon, 1.25242424)]
         [TestCase(DefaultText, null)]
         [TestCase(DefaultEnDate, null)]
         [TestCase(DefaultGuid, null)]
@@ -174,7 +174,7 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         }
 
         [TestCase(DefaultOne, 1)]
-        [TestCase(DefaultNumberWithColon, 1.25)]
+        [TestCase(DefaultNumberWithColon, 1.25242424)]
         [TestCase(DefaultText, null)]
         [TestCase(DefaultEnDate, null)]
         [TestCase(DefaultGuid, null)]
@@ -198,7 +198,7 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         }
 
         [TestCase(DefaultOne, 1f)]
-        [TestCase(DefaultNumberWithColon, 1.25f)]
+        [TestCase(DefaultNumberWithColon, 1.25242424f)]
         [TestCase(DefaultText, null)]
         [TestCase(DefaultEnDate, null)]
         [TestCase(DefaultGuid, null)]
@@ -555,17 +555,17 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         }
 
         [TestCase(DefaultOne, 1)]
-        [TestCase(DefaultNumberWithColon, 1.25)]
+        [TestCase(DefaultNumberWithColon, 1.25242424)]
         [TestCase(DefaultText, null)]
         [TestCase(DefaultEnDate, null)]
         [TestCase(DefaultGuid, null)]
         [TestCase(" " + DefaultOne, 1)]
-        [TestCase(" " + DefaultNumberWithColon, 1.25)]
+        [TestCase(" " + DefaultNumberWithColon, 1.25242424)]
         [TestCase(" " + DefaultText, null)]
         [TestCase(" " + DefaultEnDate, null)]
         [TestCase(" " + DefaultGuid, null)]
         [TestCase(DefaultOne + " ", 1)]
-        [TestCase(DefaultNumberWithColon + " ", 1.25)]
+        [TestCase(DefaultNumberWithColon + " ", 1.25242424)]
         [TestCase(DefaultText + " ", null)]
         [TestCase(DefaultEnDate + " ", null)]
         [TestCase(DefaultGuid + " ", null)]
@@ -600,17 +600,17 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         }
 
         [TestCase(DefaultOne, 1)]
-        [TestCase(DefaultNumberWithColon, 1.25)]
+        [TestCase(DefaultNumberWithColon, 1.25242424)]
         [TestCase(DefaultText, null)]
         [TestCase(DefaultEnDate, null)]
         [TestCase(DefaultGuid, null)]
         [TestCase(" " + DefaultOne, 1)]
-        [TestCase(" " + DefaultNumberWithColon, 1.25)]
+        [TestCase(" " + DefaultNumberWithColon, 1.25242424)]
         [TestCase(" " + DefaultText, null)]
         [TestCase(" " + DefaultEnDate, null)]
         [TestCase(" " + DefaultGuid, null)]
         [TestCase(DefaultOne + " ", 1)]
-        [TestCase(DefaultNumberWithColon + " ", 1.25)]
+        [TestCase(DefaultNumberWithColon + " ", 1.25242424)]
         [TestCase(DefaultText + " ", null)]
         [TestCase(DefaultEnDate + " ", null)]
         [TestCase(DefaultGuid + " ", null)]
@@ -644,17 +644,17 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         }
 
         [TestCase(DefaultOne, 1f)]
-        [TestCase(DefaultNumberWithColon, 1.25f)]
+        [TestCase(DefaultNumberWithColon, 1.25242424f)]
         [TestCase(DefaultText, null)]
         [TestCase(DefaultEnDate, null)]
         [TestCase(DefaultGuid, null)]
         [TestCase(" " + DefaultOne, 1f)]
-        [TestCase(" " + DefaultNumberWithColon, 1.25f)]
+        [TestCase(" " + DefaultNumberWithColon, 1.25242424f)]
         [TestCase(" " + DefaultText, null)]
         [TestCase(" " + DefaultEnDate, null)]
         [TestCase(" " + DefaultGuid, null)]
         [TestCase(DefaultOne + " ", 1f)]
-        [TestCase(DefaultNumberWithColon + " ", 1.25f)]
+        [TestCase(DefaultNumberWithColon + " ", 1.25242424f)]
         [TestCase(DefaultText + " ", null)]
         [TestCase(DefaultEnDate + " ", null)]
         [TestCase(DefaultGuid + " ", null)]
