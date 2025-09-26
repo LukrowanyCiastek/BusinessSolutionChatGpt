@@ -268,7 +268,7 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         public void TryParseDateTime_GiveInput_OutMachedValaue()
         {
             var input = DefaultPLDate;
-            DateTime.TryParse(input, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var expected);
+            DateTime.TryParse(input, CultureInfo.InvariantCulture, out var expected);
             ConsoleParser.TryParseDateTime(input, out object? actual);
 
             actual.Should().Be(expected);
@@ -278,7 +278,7 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         [TestCase(DefaultNumberWithColon, null)]
         [TestCase(DefaultText, null)]
         [TestCase(DefaultGuid, null)]
-        public void TryParseDateTime_GiveInput_OutMachedValaue(string input, DateTime? expected)
+        public void TryParseDateTime_GiveInput_OutMachedDatetimeValaue(string input, DateTime? expected)
         {
             ConsoleParser.TryParseDateTime(input, out object? actual);
 
@@ -773,7 +773,7 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
         [TestCase(DefaultNumberWithColon + " ", false)]
         [TestCase(DefaultText + " ", false)]
         [TestCase(DefaultGuid + " ", false)]
-        public void TryParseDateTime_GiveInput_ReturnValaue(string input, bool expected)
+        public void TryParseForDateTime_GiveInput_ReturnValaue(string input, bool expected)
         {
             var actual = ConsoleParser.TryParse(input, typeof(DateTime), out object? result);
 
