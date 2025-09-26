@@ -624,8 +624,8 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
                .WithMessage("Type is primitive");
         }
 
-        [TestCase(false, "true", "None", "1", "25-12-1990", "1", "1", "1", "1", "00000000-0000-0000-0000-000000000001", true, TestEnum.None, 1, "foo", (long)1, 1f, 1d, 1)]
-        [TestCase(true, "true", "None", "1", "25-12-1990", "1", "1", "1", "1", "00000000-0000-0000-0000-000000000001", true, TestEnum.None, 1, "foo", (long)1, 1f, 1d, 1)]
+        [TestCase(false, "true", "None", "1", "1990-12-25", "1", "1", "1", "1", "00000000-0000-0000-0000-000000000001", true, TestEnum.None, 1, "foo", (long)1, 1f, 1d, 1)]
+        [TestCase(true, "true", "None", "1", "1990-12-25", "1", "1", "1", "1", "00000000-0000-0000-0000-000000000001", true, TestEnum.None, 1, "foo", (long)1, 1f, 1d, 1)]
         [TestCase(true, "", "", "", "", "", "", "", "", "", null, null, null, "", null, null, null, null)]
         public void ReadObject_MissingValidator_ReturnsObject(bool allowedNull,
             string textBool,
@@ -670,8 +670,8 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
             actual?.GuidField.Should().Be(expectedGuid);
         }
 
-        [TestCase(false, "true", "None", "1", "foo", "25-12-1990", "1", "1", "1", "1", "00000000-0000-0000-0000-000000000001", true, TestEnum.None, 1, "foo", (long)1, 1f, 1d, 1)]
-        [TestCase(true, "true", "None", "1", "", "25-12-1990", "1", "1", "1", "1", "00000000-0000-0000-0000-000000000001", true, TestEnum.None, 1, "", (long)1, 1f, 1d, 1)]
+        [TestCase(false, "true", "None", "1", "foo", "1990-12-25", "1", "1", "1", "1", "00000000-0000-0000-0000-000000000001", true, TestEnum.None, 1, "foo", (long)1, 1f, 1d, 1)]
+        [TestCase(true, "true", "None", "1", "", "1990-12-25", "1", "1", "1", "1", "00000000-0000-0000-0000-000000000001", true, TestEnum.None, 1, "", (long)1, 1f, 1d, 1)]
         [TestCase(true, "", "", "", "", "", "", "", "", "", "", null, null, null, "", null, null, null, null)]
         public void ReadObject_GiveValidatorPassData_ReturnsObject(bool allowedNull,
             string textBool,
@@ -694,7 +694,7 @@ namespace BusinessSolutionChatGpt.Console.Tests.Unit
             double? expectedDouble)
         {
             Guid? expectedGuid = string.IsNullOrEmpty(textGuid) ? null : Guid.Parse(textGuid);
-            DateTime? expectedDatetime = string.IsNullOrEmpty(textDateTime) ? null : DateTime.Parse(textDateTime);
+            DateTime? expectedDatetime = string.IsNullOrEmpty(textDateTime) ? null : DateTime.Parse(textDateTime, CultureInfo.InvariantCulture);
             var mockOutput = Fixture.FreezeMock<IOutput>();
             var mockValidator = Fixture.FreezeMock<IValidator<TestObject?>>();
             var succesValidation = new FluentValidation.Results.ValidationResult();
