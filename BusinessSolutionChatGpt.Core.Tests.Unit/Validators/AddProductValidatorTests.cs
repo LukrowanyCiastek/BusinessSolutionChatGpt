@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using BusinessSolutionChatGpt.Core.DTO.Product;
 using BusinessSolutionChatGpt.Core.Interfaces;
 using BusinessSolutionChatGpt.Core.Validators;
 using BusinessSolutionChatGpt.Tests.Core;
@@ -12,39 +13,58 @@ namespace BusinessSolutionChatGpt.Core.Tests.Unit.Validators
     public class AddProductValidatorTests : BaseFixture
     {
         [Test]
-        public void Validate_ValueIIsNuLL_ReturnsError()
+        public void Validate_ProductNameIsNull_ReturnsError()
         {
-            var expected = "Identyfiaktor musi być większy od 0";
+            var expected = Fixture.Create<LocalizedString>();
+            var stringLocalizerMock = Fixture.FreezeMock<IStringLocalizer>();
+            stringLocalizerMock.GetString("ProductMissingNameValidationMessage").Returns(expected);
+            var product = Fixture.Create<AddProductDTO>();
+            product.Name = null;
             var validator = Fixture.Create<AddProductValidator>();
 
-            var actual = validator.Validate(0);
-
-            expected.Should().Be(actual.Errors.First().ErrorMessage);
-        }
-
-        [Test]
-        public void Validate_ValueMoreThanZeroAndProductDoesNotExists_ReturnsError()
-        {
-            var shopCartManagerMock = Fixture.FreezeMock<IShopCartManager>();
-            shopCartManagerMock.Exists(Arg.Any<long>()).Returns(false);
-            var stringLocalizerMock = Fixture.FreezeMock<IStringLocalizer>();
-            var expected = Fixture.Create<LocalizedString>();
-            stringLocalizerMock.GetString("ProductNotExistValidationMessage").Returns(expected);
-            var validator = Fixture.Create<ProductExistValidator>();
-
-            var actual = validator.Validate(1);
+            var actual = validator.Validate(product);
 
             expected.Value.Should().Be(actual.Errors.First().ErrorMessage);
         }
 
         [Test]
-        public void Validate_ValueMoreThanZeroAndProductExists_ValidationPass()
+        public void Validate_ProductNameEmpty_ReturnsError()
         {
-            var shopCartManagerMock = Fixture.FreezeMock<IShopCartManager>();
-            shopCartManagerMock.Exists(Arg.Any<long>()).Returns(true);
-            var validator = Fixture.Create<ProductExistValidator>();
+            var expected = Fixture.Create<LocalizedString>();
+            var stringLocalizerMock = Fixture.FreezeMock<IStringLocalizer>();
+            stringLocalizerMock.GetString("ProductEmptyNameValidationMessage").Returns(expected);
+            var product = Fixture.Create<AddProductDTO>();
+            product.Name = string.Empty;
+            var validator = Fixture.Create<AddProductValidator>();
 
-            var actual = validator.Validate(1);
+            var actual = validator.Validate(product);
+
+            expected.Value.Should().Be(actual.Errors.First().ErrorMessage);
+        }
+
+        [Test]
+        public void Validate_ProductPriceZero_ReturnsError()
+        {
+            var expected = Fixture.Create<LocalizedString>();
+            var stringLocalizerMock = Fixture.FreezeMock<IStringLocalizer>();
+            stringLocalizerMock.GetString("ProductNotPositivePriceValidationMessage").Returns(expected);
+            var product = Fixture.Create<AddProductDTO>();
+            product.Price = 0;
+            var validator = Fixture.Create<AddProductValidator>();
+
+            var actual = validator.Validate(product);
+
+            expected.Value.Should().Be(actual.Errors.First().ErrorMessage);
+        }
+
+        [Test]
+        public void Validate_ProductIsCorrect_ValidationPass()
+        {
+            var product = Fixture.Create<AddProductDTO>();
+            product.Price = 1;
+            var validator = Fixture.Create<AddProductValidator>();
+
+            var actual = validator.Validate(product);
 
             actual.IsValid.Should().BeTrue();
         }
