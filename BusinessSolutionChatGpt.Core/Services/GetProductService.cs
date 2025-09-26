@@ -15,8 +15,8 @@ namespace BusinessSolutionChatGpt.Core.Services
 
         bool IGetProductService.Exists(long id) => repository.Exists(id);
 
-        List<ProductDetailsDTO> IGetProductService.GetAll() => repository.GetAll().Select(x => new ProductDetailsDTO { Name = x.Name!, Price = x.Price }).ToList();
+        List<ProductDetailsDTO> IGetProductService.GetAll() => [.. repository.GetAll().Select(x => new ProductDetailsDTO { Name = x.Name!, Price = x.Price })];
 
-        decimal IGetProductService.GetPriceAll() => repository.GetAllPrice();
+        decimal IGetProductService.GetTotalCost() => repository.GetTotalPrice();
     }
 }

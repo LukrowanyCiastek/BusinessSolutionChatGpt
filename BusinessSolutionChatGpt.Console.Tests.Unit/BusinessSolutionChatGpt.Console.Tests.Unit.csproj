@@ -9,17 +9,19 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="FluentAssertions" Version="8.6.0" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
 		<PackageReference Include="NUnit" Version="4.4.0" />
 		<PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Using Include="NUnit.Framework" />
+	  <ProjectReference Include="..\BusinessSolutionChatGpt.Console\BusinessSolutionChatGpt.Console.csproj" />
+	  <ProjectReference Include="..\BusinessSolutionChatGpt.Tests.Core\BusinessSolutionChatGpt.Tests.Core.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\BusinessSolutionChatGpt.Tests.Core\BusinessSolutionChatGpt.Tests.Core.csproj" />
+		<Using Include="NUnit.Framework" />
 	</ItemGroup>
 
 </Project>

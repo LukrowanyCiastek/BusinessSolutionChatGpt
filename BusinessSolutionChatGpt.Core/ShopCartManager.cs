@@ -21,7 +21,7 @@ namespace BusinessSolutionChatGpt.Core
 
         List<ProductDetailsDTO> IShopCartManager.GetAll() => getProductService.GetAll();
 
-        decimal IShopCartManager.GetTotalCost() => getProductService.GetPriceAll();
+        decimal IShopCartManager.GetTotalCost() => getProductService.GetTotalCost();
 
         void IShopCartManager.DeleteAll() => deleteProductService.DeleteAll();
 

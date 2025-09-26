@@ -1,6 +1,6 @@
 ﻿namespace BusinessSolutionChatGpt.Console.Infrastructure.Interfaces
 {
-    internal interface IOutput
+    public interface IOutput
     {
         void WriteLineWithEscape(string message);
 

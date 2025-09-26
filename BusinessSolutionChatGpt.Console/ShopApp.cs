@@ -3,6 +3,7 @@ using BusinessSolutionChatGpt.Console.Interfaces;
 using BusinessSolutionChatGpt.Core.DTO.Product;
 using BusinessSolutionChatGpt.Core.Interfaces;
 using BusinessSolutionChatGpt.Core.Validators;
+using FluentValidation;
 using log4net;
 using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
@@ -15,7 +16,7 @@ namespace BusinessSolutionChatGpt.Console
         private readonly IOutput output;
         private readonly IInput input;
         private readonly IShopCartManager shopCartManager;
-        private readonly AddProductValidator addProductValidator;
+        private readonly IValidator<AddProductDTO> addProductValidator;
         private readonly ProductExistValidator productExistValidator;
         private readonly IStringLocalizer localizer;
         private readonly ILog log;
@@ -24,7 +25,7 @@ namespace BusinessSolutionChatGpt.Console
         public ShopApp(IOutput output,
             IInput input,
             IShopCartManager shopCartManager,
-            AddProductValidator addProductValidator,
+            IValidator<AddProductDTO> addProductValidator,
             ProductExistValidator productExistValidator,
             IStringLocalizer localizer,
             ILog log) 
@@ -45,18 +46,18 @@ namespace BusinessSolutionChatGpt.Console
             do
             {
                 output.WriteLine(string.Empty);
-                output.WriteLine(localizer["AddProductInstruction"]);
-                output.WriteLine(localizer["ShowAllProductsInstruction"]);
-                output.WriteLine(localizer["ShowTotalCostInstruction"]);
-                output.WriteLine(localizer["RemoveSpecifiedProductInstruction"]);
-                output.WriteLine(localizer["RemoveAllProductsInstruction"]);
-                output.WriteLine(localizer["StopShopAppInstruction"]);
+                output.WriteLine(localizer.GetString("AddProductInstruction").Value);
+                output.WriteLine(localizer.GetString("ShowAllProductsInstruction").Value);
+                output.WriteLine(localizer.GetString("ShowTotalCostInstruction").Value);
+                output.WriteLine(localizer.GetString("RemoveSpecifiedProductInstruction").Value);
+                output.WriteLine(localizer.GetString("RemoveAllProductsInstruction").Value);
+                output.WriteLine(localizer.GetString("StopShopAppInstruction").Value);
 
                 readedKey = input.ReadKey();
                 switch (readedKey.Key)
                 {
                     case ConsoleKey.D1:
-                        var product = LoopDataRetriever<AddProductDTO>.ReadObject(addProductValidator, output);
+                        var product = input.ReadObject(addProductValidator, output);
                         log.Debug($"Użytkownik stworzył produkt {JsonConvert.SerializeObject(product)}");
                         shopCartManager.Add(product);
                         break;
@@ -69,7 +70,7 @@ namespace BusinessSolutionChatGpt.Console
                         output.WriteLineWithEscape($"Całkowity koszt to: {shopCartManager.GetTotalCost().ToString(CultureInfo.InvariantCulture)}");
                         break;
                     case ConsoleKey.D4:
-                        var productId = LoopDataRetriever<long>.ReadPrimitive(productExistValidator, output, localizer["ProductIdentifierInstruction"]);
+                        var productId = input.ReadPrimitive(productExistValidator, output, localizer.GetString("ProductIdentifierInstruction").Value);
                         log.Debug($"Użytkownik próbuje produkt {productId}");
                         shopCartManager.Delete(productId - 1);
                         output.WriteLine($"Usunięto produkt o identyfikatorze: {productId}");
@@ -79,6 +80,9 @@ namespace BusinessSolutionChatGpt.Console
                         output.WriteLine("Koszyk został wyczyszczony");
                         shopCartManager.DeleteAll();
                         break;
+                    case ConsoleKey.Escape:
+                        log.Debug($"Użytkownik zakończył pracę");
+                        continue;
                     default:
                         log.Debug($"Użytkownik wybrał niepoprawną komendę");
                         output.WriteLineWithEscape("niepoprawna komenda");
